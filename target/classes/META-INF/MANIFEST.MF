@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: service-repository
+Implementation-Version: ${version.name}
+Built-By: mdroy
+Implementation-Vendor-Id: net.boomerangplatform
+Build-Jdk: 1.8.0_171
+Implementation-URL: http://projects.spring.io/spring-boot/service-repo
+ sitory/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
