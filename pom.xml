@@ -22,14 +22,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
-
-    <dependencies>
-        <dependency>
-           <groupId>net.boomerangplatform</groupId>
-           <artifactId>lib-security</artifactId>
-           <version>0.0.15</version>
-        </dependency>
+    </properties>
+    <repositories>
+         <repository>
+             <id>boomeranglib-maven</id>
+             <url>https://tools.boomerangplatform.net/artifactory/boomeranglib-maven</url>
+         </repository>
+     </repositories>
+     <dependencies>
+                <dependency>
+             <groupId>net.boomerangplatform</groupId>
+             <artifactId>lib-security</artifactId>
+             <version>0.0.15</version>
+         </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -115,7 +120,22 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-		</dependency>
+        </dependency>
+         <dependency>
+             <groupId>net.boomerangplatform</groupId>
+             <artifactId>lib-mongo</artifactId>
+             <version>1.0.29</version>
+         </dependency>
+         <dependency>
+             <groupId>net.boomerangplatform</groupId>
+             <artifactId>lib-util</artifactId>
+             <version>0.1.1</version>
+         </dependency>
+         <dependency>
+             <groupId>net.boomerangplatform</groupId>
+             <artifactId>lib-audit</artifactId>
+             <version>0.1.5</version>
+         </dependency>
 	</dependencies>
 
 	<build>
@@ -130,6 +150,7 @@
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
-        </resources>
+		</resources>
 	</build>
+
 </project>
