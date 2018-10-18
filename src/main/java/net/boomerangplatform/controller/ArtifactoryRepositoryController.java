@@ -5,9 +5,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import net.boomerangplatform.model.VersionArtifact;
 import net.boomerangplatform.service.ArtifactoryRepositoryService;
@@ -42,5 +45,13 @@ public class ArtifactoryRepositoryController {
             @RequestParam(value = "ciComponentName", required = true) String ciComponentName,
             @RequestParam(value = "version", required = true) String version) {
         return repositoryService.getArtifactVersionCreatedDate(ciTeamName, ciComponentName, version);
+    }
+    
+    @RequestMapping(value="" , method = RequestMethod.POST)
+    public void uploadFile(
+    		@RequestParam(value = "file", required = true) MultipartFile file,
+            @RequestParam(value = "fileName", required = true) String fileName,
+            @RequestParam(value = "folderPath", required = true) String folderPath) throws Exception {
+       repositoryService.uploadFile(file, fileName, folderPath);
     }
 }
