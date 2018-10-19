@@ -12,11 +12,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -168,20 +167,18 @@ public class ArtifactoryRepositoryServiceImpl implements ArtifactoryRepositorySe
 
 	}
 
-	private String upload(MultipartFile  file, String fileName, String folderPath) throws Exception {
+	private String upload(MultipartFile file, String fileName, String folderPath) throws Exception {
 		final HttpHeaders headers = new HttpHeaders();
 		headers.add("X-JFrog-Art-Api", artifactoryAPIKey);
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		
+		HttpEntity<byte[]> entity = new HttpEntity<>(file.getBytes(), headers);
 
-		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-		body.add("file", file);
-
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-		String serverUrl = artifactoryBaseURL + "/" + boomerangRepoPath + "/" + folderPath + fileName;
-
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<String> response = restTemplate.postForEntity(serverUrl, requestEntity, String.class);
-		return response.getBody();
+		String serverUrl = artifactoryBaseURL + "/boomerang/" + folderPath + "/" + fileName;
+	
+		ResponseEntity<String> result = requestFactoryRestTemplate.exchange(serverUrl,
+				HttpMethod.PUT, entity, String.class);
+		
+		return result.getBody();
 
 	}
 
