@@ -153,7 +153,7 @@
 		<dependency>
 			<groupId>net.boomerangplatform</groupId>
 			<artifactId>lib-audit</artifactId>
-			<version>0.1.25</version>
+			<version>0.1.28</version>
 		</dependency>
     
 		<dependency>
