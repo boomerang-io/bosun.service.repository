@@ -44,7 +44,7 @@ public class ArtifactoryRepositoryServiceImpl implements ArtifactoryRepositorySe
 
 	@Override
 	public byte[] getArtifactBytes(String ciTeamName, String ciComponentName, String version, String artifact) {
-		final String artifactoryBaseURL = this.settingsService.getConfiguration("artifactory", "artifactory.url").getValue();
+		final String artifactoryBaseURL = this.settingsService.getConfiguration("cicd", "artifactory.url").getValue();
 		final String url = String.format("%s%s/%s/%s/%s/%s", artifactoryBaseURL, boomerangRepoPath, ciTeamName,
 				ciComponentName, version, artifact);
 
@@ -66,7 +66,7 @@ public class ArtifactoryRepositoryServiceImpl implements ArtifactoryRepositorySe
 	public List<VersionArtifact> getArtifactList(String ciTeamName, String ciComponentName, String version) {
 
 		final ArrayList<VersionArtifact> versionArtifacts = new ArrayList<VersionArtifact>();
-		final String artifactoryBaseURL = this.settingsService.getConfiguration("artifactory", "artifactory.url").getValue();
+		final String artifactoryBaseURL = this.settingsService.getConfiguration("cicd", "artifactory.url").getValue();
 		final String url = String.format("%s/api/storage%s/%s/%s/%s", artifactoryBaseURL, boomerangRepoPath, ciTeamName,
 				ciComponentName, version);
 
@@ -119,7 +119,7 @@ public class ArtifactoryRepositoryServiceImpl implements ArtifactoryRepositorySe
 	public String getArtifactVersionCreatedDate(String ciTeamName, String ciComponentName, String version) {
 
 		byte[] artifactListJsonBytes = "".getBytes();
-		final String artifactoryBaseURL = this.settingsService.getConfiguration("artifactory", "artifactory.url").getValue();
+		final String artifactoryBaseURL = this.settingsService.getConfiguration("cicd", "artifactory.url").getValue();
 		final String url = String.format("%s/api/storage%s/%s/%s/%s", artifactoryBaseURL, boomerangRepoPath, ciTeamName,
 				ciComponentName, version);
 
@@ -149,7 +149,7 @@ public class ArtifactoryRepositoryServiceImpl implements ArtifactoryRepositorySe
 
 	private byte[] invokeArtifactory(String url) throws Exception {
 		final HttpHeaders headers = new HttpHeaders();
-		final String artifactoryAPIKey = this.settingsService.getConfiguration("artifactory", "artifactory.apikey").getValue();
+		final String artifactoryAPIKey = this.settingsService.getConfiguration("cicd", "artifactory.apikey").getValue();
 		headers.add("X-JFrog-Art-Api", artifactoryAPIKey);
 		headers.add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 
@@ -169,15 +169,12 @@ public class ArtifactoryRepositoryServiceImpl implements ArtifactoryRepositorySe
 
 	private String upload(MultipartFile file, String fileName, String folderPath) throws Exception {
 		final HttpHeaders headers = new HttpHeaders();
-		final String artifactoryAPIKey = this.settingsService.getConfiguration("artifactory", "artifactory.apikey").getValue();
+		final String artifactoryAPIKey = this.settingsService.getConfiguration("cicd", "artifactory.apikey").getValue();
 		headers.add("X-JFrog-Art-Api", artifactoryAPIKey);
 		
 		HttpEntity<byte[]> entity = new HttpEntity<>(file.getBytes(), headers);
-		final String artifactoryBaseURL = this.settingsService.getConfiguration("artifactory", "artifactory.url").getValue();
+		final String artifactoryBaseURL = this.settingsService.getConfiguration("cicd", "artifactory.url").getValue();
 		String serverUrl = artifactoryBaseURL + "/boomerang/" + folderPath + "/" + fileName;
-		System.out.println("******");
-		System.out.println(serverUrl);
-		System.out.println("******");
 	
 		ResponseEntity<String> result = requestFactoryRestTemplate.exchange(serverUrl,
 				HttpMethod.PUT, entity, String.class);
