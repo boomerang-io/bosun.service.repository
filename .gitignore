@@ -24,4 +24,9 @@ target
 .settings
 .classpath
 
-
+.class
+.classpath
+.settings
+.project
+.bin
+/target/**
