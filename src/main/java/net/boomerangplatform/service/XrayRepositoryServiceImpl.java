@@ -1,5 +1,6 @@
 package net.boomerangplatform.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import net.boomerangplatform.model.Artifact;
+import net.boomerangplatform.model.ArtifactPackage;
+import net.boomerangplatform.model.ArtifactSummary;
 import net.boomerangplatform.model.Component;
 import net.boomerangplatform.model.DependencyGraph;
 import net.boomerangplatform.model.Path;
+import net.boomerangplatform.model.Paths;
 import net.boomerangplatform.mongo.entity.CiComponentEntity;
 import net.boomerangplatform.mongo.entity.CiComponentVersionEntity;
 import net.boomerangplatform.mongo.entity.CiTeamEntity;
@@ -37,6 +40,9 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 	
 	@Value("${xray.url.api.dependencygraph}")
 	private String xrayDependencyGraph;
+	
+	@Value("${xray.url.api.artifactsummary}")
+	private String xrayArtifactSummary;		
 	
 	@Value("${xray.boomerang.user}")
 	private String xrayBoomerangUser;	
@@ -158,12 +164,12 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 		final ResponseEntity<DependencyGraph> response = internalRestTemplate.exchange(url, HttpMethod.POST, request, DependencyGraph.class);
 		DependencyGraph rawDependencyGraph = (DependencyGraph) response.getBody();
 		
-		Artifact artifact = new Artifact();
-		artifact.setName(rawDependencyGraph.getArtifact().getName());
-		artifact.setComponentId(rawDependencyGraph.getArtifact().getComponentId());
-		artifact.setPath(rawDependencyGraph.getArtifact().getPath());
-		artifact.setPkgType(rawDependencyGraph.getArtifact().getPkgType());
-		artifact.setSha256(rawDependencyGraph.getArtifact().getSha256());		
+		ArtifactPackage artifactPackage = new ArtifactPackage();
+		artifactPackage.setName(rawDependencyGraph.getArtifact().getName());
+		artifactPackage.setComponentId(rawDependencyGraph.getArtifact().getComponentId());
+		artifactPackage.setPath(rawDependencyGraph.getArtifact().getPath());
+		artifactPackage.setPkgType(rawDependencyGraph.getArtifact().getPkgType());
+		artifactPackage.setSha256(rawDependencyGraph.getArtifact().getSha256());		
 		
 		Map<String, Component> componentMap = new HashMap<String, Component>();						
 		for (Component artifactComponent : rawDependencyGraph.getComponents()) {			
@@ -209,10 +215,100 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 		}
 		
 		DependencyGraph dependencyGraph = new DependencyGraph();
-		dependencyGraph.setArtifact(artifact);
+		dependencyGraph.setArtifact(artifactPackage);
 		dependencyGraph.getComponents().addAll(componentMap.values());
 		
 		return dependencyGraph;
+	}
+	
+	@Override
+	public ArtifactSummary getArtifactSummary(String ciComponentId, String version) {
+		
+		CiComponentVersionEntity componentVersionEntity = versionService.findVersionWithNameForComponentId(version, ciComponentId);
+		
+		if (componentVersionEntity == null) {
+			return new ArtifactSummary();
+		}
+		
+		String mode = null;
+		boolean isDocker = false;
+		String dockerImageName = null;
+		
+		for (CoreProperty property : componentVersionEntity.getProperties()) {
+			
+			logger.info("property=" + property.getKey() + ", value=" + property.getValue());
+			
+			switch (property.getKey()) {
+			case "mode":
+				mode = property.getValue();
+				break;	
+			case "docker.enable":
+				isDocker = Boolean.valueOf(property.getValue());
+				break;
+			case "docker.image.name":
+				dockerImageName = property.getValue();
+				break;			
+			}
+		}
+		
+		// Currently only supports Java with Docker
+		if (!mode.equalsIgnoreCase("java") || !isDocker) {
+			return new ArtifactSummary();
+		}
+		
+		logger.info("ciComponentId=" + componentVersionEntity.getCiComponentId() + ", ciComponentVersionId=" + componentVersionEntity.getId());
+		
+//		CiComponentEntity componentEntity = componentService.findById(componentVersionEntity.getCiComponentId());
+		
+//		Temporary workaround as cannot use componentService.findById() as it requires new isActive flag which does not yet exist in ci_components collection
+		CiComponentEntity componentEntity = null;
+		
+		List<CiComponentEntity> componentEntityList = componentService.getAllComponentEntity();
+		for (CiComponentEntity entity : componentEntityList) {
+			if (entity.getId().equalsIgnoreCase(componentVersionEntity.getCiComponentId())) {
+				componentEntity = entity;
+				break;
+			}
+		}
+		
+		if (componentEntity == null) {
+			return new ArtifactSummary();
+		}
+		
+		logger.info("ciComponentName=" + componentEntity.getName() + ", ciTeamId=" + componentEntity.getCiTeamId());
+		
+		CiTeamEntity teamEntity = teamService.findById(componentEntity.getCiTeamId());
+		
+		if (teamEntity == null) {
+			return new ArtifactSummary();
+		}
+		
+		logger.info("ciTeamName=" + teamEntity.getName());
+		
+		String org = teamEntity.getName().toLowerCase().replaceAll("\\s+", "-");
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(boomerangArtifactoryId).append("/").append(boomerangRepoDocker).append("/").append(org).append("/").append(dockerImageName).append("/").append(version);
+		
+		List<String> pathList = new ArrayList<String>();
+		pathList.add(sb.toString());
+		
+		Paths paths = new Paths();
+		paths.setPaths(pathList);
+		
+		logger.info("path=" + paths.getPaths().get(0));
+		
+		final HttpEntity<?> request = new HttpEntity<>(paths, getHeaders());
+		
+		sb = new StringBuilder();
+		sb.append(xrayBase).append(xrayArtifactSummary);
+		
+		String url = sb.toString();
+
+		final ResponseEntity<ArtifactSummary> response = internalRestTemplate.exchange(url, HttpMethod.POST, request, ArtifactSummary.class);
+		ArtifactSummary artifactSummary = (ArtifactSummary) response.getBody();
+		
+		return artifactSummary;
 	}
 	
 	private HttpHeaders getHeaders() {

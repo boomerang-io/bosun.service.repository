@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.boomerangplatform.model.ArtifactSummary;
 import net.boomerangplatform.model.DependencyGraph;
 import net.boomerangplatform.service.XrayRepositoryService;
 
@@ -20,5 +21,12 @@ public class XrayRepositoryController {
 			@RequestParam(value = "ciComponentId", required = true) String ciComponentId,
 			@RequestParam(value = "version", required = true) String version) {
 		return repositoryService.getArtifactDependencygraph(ciComponentId, version);
+	}
+	
+	@RequestMapping("/artifact/summary")
+	public ArtifactSummary getArtifactSummary(
+			@RequestParam(value = "ciComponentId", required = true) String ciComponentId,
+			@RequestParam(value = "version", required = true) String version) {
+		return repositoryService.getArtifactSummary(ciComponentId, version);
 	}
 }

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class DependencyGraph {
 	
 	@JsonProperty("artifact")
-	private Artifact artifact;
+	private ArtifactPackage artifact;
 	
 	@JsonProperty("components")
 	private List<Component> components = null;
@@ -19,11 +19,11 @@ public class DependencyGraph {
 		
 	}
 
-	public Artifact getArtifact() {
+	public ArtifactPackage getArtifact() {
 		return artifact;
 	}
 
-	public void setArtifact(Artifact artifact) {
+	public void setArtifact(ArtifactPackage artifact) {
 		this.artifact = artifact;
 	}
 
