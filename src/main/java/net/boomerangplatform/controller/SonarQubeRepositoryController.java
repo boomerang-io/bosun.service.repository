@@ -15,9 +15,9 @@ public class SonarQubeRepositoryController {
 	@Autowired
 	private SonarQubeRepositoryService repositoryService;
 
-	@RequestMapping("/issues/summary")
-	public SonarQubeReport getIssuesSummary(
+	@RequestMapping("/report")
+	public SonarQubeReport getReport(
 			@RequestParam(value = "ciComponentId", required = true) String ciComponentId) {
-		return repositoryService.getIssuesSummary(ciComponentId);
+		return repositoryService.getReport(ciComponentId);
 	}
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SonarQubeComponent {
+public class IssueComponent {
 
 	@JsonProperty("organization")
 	private String organization;
@@ -23,7 +23,7 @@ public class SonarQubeComponent {
 	@JsonProperty("path")
 	private String path;
 	
-	public SonarQubeComponent() {
+	public IssueComponent() {
 		
 	}
 

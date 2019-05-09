@@ -1,9 +1,6 @@
 package net.boomerangplatform.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
@@ -18,20 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import net.boomerangplatform.model.ArtifactPackage;
-import net.boomerangplatform.model.ArtifactSummary;
-import net.boomerangplatform.model.Component;
-import net.boomerangplatform.model.DependencyGraph;
-import net.boomerangplatform.model.Path;
-import net.boomerangplatform.model.Paths;
+import net.boomerangplatform.model.SonarQubeIssuesReport;
+import net.boomerangplatform.model.SonarQubeMetricsReport;
 import net.boomerangplatform.model.SonarQubeReport;
 import net.boomerangplatform.mongo.entity.CiComponentEntity;
-import net.boomerangplatform.mongo.entity.CiComponentVersionEntity;
-import net.boomerangplatform.mongo.entity.CiTeamEntity;
-import net.boomerangplatform.mongo.model.CoreProperty;
 import net.boomerangplatform.mongo.service.CiComponentService;
-import net.boomerangplatform.mongo.service.CiComponentVersionService;
-import net.boomerangplatform.mongo.service.CiTeamService;
 
 @Service
 public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryService {
@@ -61,7 +49,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 //	private SettingsService settingsService;
 
 	@Override
-	public SonarQubeReport getIssuesSummary(String ciComponentId) {
+	public SonarQubeReport getReport(String ciComponentId) {
 		
 //		CiComponentEntity componentEntity = componentService.findById(componentVersionEntity.getCiComponentId());
 		
@@ -89,10 +77,21 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		
 		String url = sb.toString().replace("{componentKeys}", componentEntity.getUcdComponentId());
 
-		final ResponseEntity<SonarQubeReport> response = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeReport.class);
-		SonarQubeReport sonarQubeReport = (SonarQubeReport) response.getBody();
+		final ResponseEntity<SonarQubeIssuesReport> sonarQubeReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeIssuesReport.class);
+		SonarQubeIssuesReport sonarQubeReport = (SonarQubeIssuesReport) sonarQubeReportResponse.getBody();
+
+//		------
+		sb = new StringBuilder();
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasures);
 		
-		return sonarQubeReport;
+		url = sb.toString().replace("{componentKey}", componentEntity.getUcdComponentId());
+
+		final ResponseEntity<SonarQubeMetricsReport> sonarQubeMetricsResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeMetricsReport.class);
+		SonarQubeMetricsReport sonarQubeMetrics = (SonarQubeMetricsReport) sonarQubeMetricsResponse.getBody();
+		
+//		------		
+		
+		return new SonarQubeReport();
 	}
 
 	private HttpHeaders getHeaders() {
