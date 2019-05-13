@@ -1,5 +1,8 @@
 package net.boomerangplatform.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,6 +17,9 @@ public class Measure {
 	
 	@JsonProperty("bestValue")
 	private Boolean bestValue;
+	
+	@JsonProperty("history")
+	private List<History> history;
 	
 	public Measure() {
 		
@@ -41,5 +47,16 @@ public class Measure {
 
 	public void setBestValue(Boolean bestValue) {
 		this.bestValue = bestValue;
+	}
+
+	public List<History> getHistory() {
+		if (history == null) {
+			history = new ArrayList<History>();
+		}
+		return history;
+	}
+
+	public void setHistory(List<History> history) {
+		this.history = history;
 	}
 }

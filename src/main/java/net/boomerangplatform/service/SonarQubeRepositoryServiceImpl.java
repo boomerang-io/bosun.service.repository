@@ -15,11 +15,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import net.boomerangplatform.model.Analysis;
+import net.boomerangplatform.model.Event;
+import net.boomerangplatform.model.History;
+import net.boomerangplatform.model.IssueComponent;
+import net.boomerangplatform.model.Issues;
+import net.boomerangplatform.model.Measure;
+import net.boomerangplatform.model.Measures;
+import net.boomerangplatform.model.SonarQubeIssue;
 import net.boomerangplatform.model.SonarQubeIssuesReport;
-import net.boomerangplatform.model.SonarQubeMetricsReport;
+import net.boomerangplatform.model.SonarQubeMeasuresReport;
+import net.boomerangplatform.model.SonarQubeProjectVersions;
 import net.boomerangplatform.model.SonarQubeReport;
 import net.boomerangplatform.mongo.entity.CiComponentEntity;
+import net.boomerangplatform.mongo.entity.CiComponentVersionEntity;
 import net.boomerangplatform.mongo.service.CiComponentService;
+import net.boomerangplatform.mongo.service.CiComponentVersionService;
 
 @Service
 public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryService {
@@ -29,11 +40,20 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 	@Value("${sonarqube.url.api.base}")
 	private String sonarqubeUrlApiBase;
 	
-	@Value("${sonarqube.url.api.issues}")
-	private String sonarqubeUrlApiIssues;	
+	@Value("${sonarqube.url.api.project.versions}")
+	private String sonarqubeUrlApiProjectVersions;
+
+	@Value("${sonarqube.url.api.issues.version}")
+	private String sonarqubeUrlApiIssuesVersion;	
 	
-	@Value("${sonarqube.url.api.measures}")
-	private String sonarqubeUrlApiMeasures;	
+	@Value("${sonarqube.url.api.measures.version}")
+	private String sonarqubeUrlApiMeasuresVersion;	
+	
+	@Value("${sonarqube.url.api.issues.latest}")
+	private String sonarqubeUrlApiIssuesLatest;	
+	
+	@Value("${sonarqube.url.api.measures.latest}")
+	private String sonarqubeUrlApiMeasuresLatest;	
 	
 	@Value("${sonarqube.boomerang.apitoken}")
 	private String sonarqubeBoomerangApitoken;	
@@ -45,11 +65,20 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 	@Autowired
 	private CiComponentService componentService;
 	
+	@Autowired
+	private CiComponentVersionService versionService;
+	
 //	@Autowired
 //	private SettingsService settingsService;
 
 	@Override
-	public SonarQubeReport getReport(String ciComponentId) {
+	public SonarQubeReport getReport(String ciComponentId, String version) {
+		
+		CiComponentVersionEntity componentVersionEntity = versionService.findVersionWithNameForComponentId(version, ciComponentId);
+		
+		if (componentVersionEntity == null) {
+			return new SonarQubeReport();
+		}
 		
 //		CiComponentEntity componentEntity = componentService.findById(componentVersionEntity.getCiComponentId());
 		
@@ -68,30 +97,131 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 			return new SonarQubeReport();
 		}
 		
-		logger.info("ciComponentName=" + componentEntity.getName() + ", ciTeamId=" + componentEntity.getCiTeamId());
+		logger.info("ciComponentName=" + componentEntity.getName() + ", ciComponentVersionId=" + componentVersionEntity.getId() + ", ciTeamId=" + componentEntity.getCiTeamId());
+		
+//		-------------------
 		
 		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiIssues);
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiProjectVersions);
 		
-		String url = sb.toString().replace("{componentKeys}", componentEntity.getUcdComponentId());
+		String url = sb.toString().replace("{project}", componentEntity.getUcdComponentId());
+
+		final ResponseEntity<SonarQubeProjectVersions> SonarQubeProjectVersionsResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeProjectVersions.class);
+		SonarQubeProjectVersions sonarQubeProjectVersions = (SonarQubeProjectVersions) SonarQubeProjectVersionsResponse.getBody();
+		
+		String date = null;
+		
+		for (Analysis analysis : sonarQubeProjectVersions.getAnalyses()) {
+			for (Event event : analysis.getEvents()) {
+				if (event.getName().equalsIgnoreCase(version)) {
+					date = analysis.getDate();
+					break;
+				}
+			}
+		}
+		
+		if (date == null) {
+			return new SonarQubeReport();
+		}
+		
+		sb = new StringBuilder();
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion);
+		
+		url = sb.toString()
+				.replace("{component}", componentEntity.getUcdComponentId())
+				.replace("{from}", date)
+				.replace("{to}", date);
+		
+		final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeMeasuresReport.class);
+		SonarQubeMeasuresReport sonarQubeMeasuresReport = (SonarQubeMeasuresReport) sonarQubeMeasuresReportResponse.getBody();	
+		
+		Measures measures = new Measures();
+		for (Measure measure : sonarQubeMeasuresReport.getMeasures()) {			
+			for (History history : measure.getHistory()) {
+				switch (measure.getMetric()) {						
+				case "ncloc":
+					measures.setNcloc(Integer.valueOf(history.getValue()));
+					break;
+				case "complexity":
+					measures.setComplexity(Integer.valueOf(history.getValue()));
+					break;
+				case "violations":
+					measures.setViolations(Integer.valueOf(history.getValue()));
+					break;				
+				}				
+			}
+		}		
+		
+//		-------------------		
+		
+		sb = new StringBuilder();
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiIssuesVersion);
+		
+		url = sb.toString()
+				.replace("{componentKeys}", componentEntity.getUcdComponentId())
+				.replace("{createdBefore}", date);
 
 		final ResponseEntity<SonarQubeIssuesReport> sonarQubeReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeIssuesReport.class);
-		SonarQubeIssuesReport sonarQubeReport = (SonarQubeIssuesReport) sonarQubeReportResponse.getBody();
-
-//		------
-		sb = new StringBuilder();
-		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasures);
+		SonarQubeIssuesReport sonarQubeIssuesReport = (SonarQubeIssuesReport) sonarQubeReportResponse.getBody();
 		
-		url = sb.toString().replace("{componentKey}", componentEntity.getUcdComponentId());
-
-		final ResponseEntity<SonarQubeMetricsReport> sonarQubeMetricsResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeMetricsReport.class);
-		SonarQubeMetricsReport sonarQubeMetrics = (SonarQubeMetricsReport) sonarQubeMetricsResponse.getBody();
+		int total = 0;
+		int blocker = 0;
+		int critical = 0;
+		int major = 0;
+		int minor = 0;
+		int info = 0;
+		int filesAnalyzed = 0;
 		
-//		------		
+		for (SonarQubeIssue sonarQubeIssue : sonarQubeIssuesReport.getIssues()) {
+			if (sonarQubeIssue.getStatus().equalsIgnoreCase("open")) {
+				switch (sonarQubeIssue.getSeverity()) {
+                case "BLOCKER":
+                	blocker++;
+                	break;
+                case "CRITICAL":
+                	critical++; 
+                	break;
+                case "MAJOR": 
+                	major++; 
+                	break;
+                case "MINOR": 
+                	minor++; 
+                	break;
+                case "INFO": 
+                	info++; 
+                	break;
+				}
+				
+				total++;
+			}			
+		}
 		
-		return new SonarQubeReport();
+		for (IssueComponent issueComponent : sonarQubeIssuesReport.getComponents()) {
+			switch (issueComponent.getQualifier()) {
+			case "FIL": 
+				filesAnalyzed++;
+				break;
+			}
+		}
+		
+//		-------------------
+		
+		Issues issues = new Issues();
+		issues.setTotal(total);
+		issues.setBlocker(blocker);
+		issues.setCritical(critical);
+		issues.setMajor(major);
+		issues.setMinor(minor);
+		issues.setInfo(info);
+		issues.setFilesAnalyzed(filesAnalyzed);
+			
+		SonarQubeReport sonarQubeReport = new SonarQubeReport();
+		sonarQubeReport.setIssues(issues);
+		sonarQubeReport.setMeasures(measures);
+		
+		return sonarQubeReport;
 	}
 
 	private HttpHeaders getHeaders() {

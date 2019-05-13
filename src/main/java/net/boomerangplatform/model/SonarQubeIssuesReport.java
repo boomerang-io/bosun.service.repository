@@ -1,5 +1,6 @@
 package net.boomerangplatform.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -88,6 +89,9 @@ public class SonarQubeIssuesReport {
 	}
 
 	public List<SonarQubeIssue> getIssues() {
+		if (issues == null) {
+			issues = new ArrayList<SonarQubeIssue>();
+		}
 		return issues;
 	}
 
@@ -96,6 +100,9 @@ public class SonarQubeIssuesReport {
 	}
 
 	public List<IssueComponent> getComponents() {
+		if (components == null) {
+			components = new ArrayList<IssueComponent>();
+		}		
 		return components;
 	}
 
@@ -104,6 +111,9 @@ public class SonarQubeIssuesReport {
 	}
 
 	public List<String> getFacets() {
+		if (facets == null) {
+			facets = new ArrayList<String>();
+		}			
 		return facets;
 	}
 

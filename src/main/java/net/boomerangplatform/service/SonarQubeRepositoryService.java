@@ -4,5 +4,5 @@ import net.boomerangplatform.model.SonarQubeReport;
 
 public interface SonarQubeRepositoryService {
 
-	SonarQubeReport getReport(String ciComponentId);
+	SonarQubeReport getReport(String ciComponentId, String version);
 }

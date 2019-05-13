@@ -1,5 +1,6 @@
 package net.boomerangplatform.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -71,6 +72,9 @@ public class MetricComponent {
 	}
 
 	public List<Measure> getMeasures() {
+		if (measures == null) {
+			measures = new ArrayList<Measure>();
+		}
 		return measures;
 	}
 
