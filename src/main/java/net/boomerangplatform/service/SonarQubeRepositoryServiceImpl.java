@@ -40,6 +40,15 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 	@Value("${sonarqube.url.api.base}")
 	private String sonarqubeUrlApiBase;
 	
+	@Value("${sonarqube.url.api.metrics.violations}")
+	private String sonarqubeUrlApiMetricsViolations;
+	
+	@Value("${sonarqube.url.api.metrics.tests}")
+	private String sonarqubeUrlApiMetricsTests;
+	
+	@Value("${sonarqube.url.api.metrics.coverage}")
+	private String sonarqubeUrlApiMetricsCoverage;
+	
 	@Value("${sonarqube.url.api.project.versions}")
 	private String sonarqubeUrlApiProjectVersions;
 
@@ -127,7 +136,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		}
 		
 		sb = new StringBuilder();
-		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion);
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsViolations);
 		
 		url = sb.toString()
 				.replace("{component}", componentEntity.getUcdComponentId())
@@ -142,13 +151,13 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 			for (History history : measure.getHistory()) {
 				switch (measure.getMetric()) {						
 				case "ncloc":
-					measures.setNcloc(Integer.valueOf(history.getValue()));
+					measures.setNcloc(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
 					break;
 				case "complexity":
-					measures.setComplexity(Integer.valueOf(history.getValue()));
+					measures.setComplexity(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
 					break;
 				case "violations":
-					measures.setViolations(Integer.valueOf(history.getValue()));
+					measures.setViolations(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
 					break;				
 				}				
 			}
@@ -219,6 +228,205 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 			
 		SonarQubeReport sonarQubeReport = new SonarQubeReport();
 		sonarQubeReport.setIssues(issues);
+		sonarQubeReport.setMeasures(measures);
+		
+		return sonarQubeReport;
+	}
+	
+	@Override
+	public SonarQubeReport getTestReport(String ciComponentId, String version) {
+		
+		CiComponentVersionEntity componentVersionEntity = versionService.findVersionWithNameForComponentId(version, ciComponentId);
+		
+		if (componentVersionEntity == null) {
+			logger.info("getTestReport-componentVersionEntity == null");
+			return new SonarQubeReport();
+		}
+		
+//		CiComponentEntity componentEntity = componentService.findById(componentVersionEntity.getCiComponentId());
+		
+//		Temporary workaround as cannot use componentService.findById() as it requires new isActive flag which does not yet exist in ci_components collection
+		CiComponentEntity componentEntity = null;
+		
+		List<CiComponentEntity> componentEntityList = componentService.getAllComponentEntity();
+		for (CiComponentEntity entity : componentEntityList) {
+			if (entity.getId().equalsIgnoreCase(ciComponentId)) {
+				componentEntity = entity;
+				break;
+			}
+		}
+		
+		if (componentEntity == null) {
+			logger.info("getTestReport-componentEntity == null");
+			return new SonarQubeReport();
+		}
+		
+		logger.info("ciComponentName=" + componentEntity.getName() + ", ciComponentVersionId=" + componentVersionEntity.getId() + ", ciTeamId=" + componentEntity.getCiTeamId());
+		
+//		-------------------
+		
+		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiProjectVersions);
+		
+		String url = sb.toString().replace("{project}", componentEntity.getUcdComponentId());
+
+		final ResponseEntity<SonarQubeProjectVersions> SonarQubeProjectVersionsResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeProjectVersions.class);
+		SonarQubeProjectVersions sonarQubeProjectVersions = (SonarQubeProjectVersions) SonarQubeProjectVersionsResponse.getBody();
+		
+		String date = null;
+		
+		for (Analysis analysis : sonarQubeProjectVersions.getAnalyses()) {
+			for (Event event : analysis.getEvents()) {
+				if (event.getName().equalsIgnoreCase(version)) {
+					date = analysis.getDate();
+					break;
+				}
+			}
+		}
+		
+		if (date == null) {
+			logger.info("getTestReport-date == null");
+			return new SonarQubeReport();
+		}
+		
+		sb = new StringBuilder();
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsTests);
+		
+		url = sb.toString()
+				.replace("{component}", componentEntity.getUcdComponentId())
+				.replace("{from}", date)
+				.replace("{to}", date);
+		
+		final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeMeasuresReport.class);
+		SonarQubeMeasuresReport sonarQubeMeasuresReport = (SonarQubeMeasuresReport) sonarQubeMeasuresReportResponse.getBody();	
+		
+		Measures measures = new Measures();
+		for (Measure measure : sonarQubeMeasuresReport.getMeasures()) {			
+			for (History history : measure.getHistory()) {
+				switch (measure.getMetric()) {						
+				case "tests":
+					measures.setTests(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;
+				case "test_errors":
+					measures.setTestErrors(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;
+				case "test_failures":
+					measures.setTestFailures(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;
+				case "skipped_tests":
+					measures.setSkippedTests(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;	
+				case "test_success_density":
+					measures.setTestSuccessDensity(history.getValue() != null ? Double.valueOf(history.getValue()) : 0);
+					break;	
+				case "test_execution_time":
+					measures.setTestExecutionTime(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;						
+				}				
+			}
+		}		
+		
+//		-------------------	
+		
+		SonarQubeReport sonarQubeReport = new SonarQubeReport();
+		sonarQubeReport.setIssues(null);
+		sonarQubeReport.setMeasures(measures);
+		
+		return sonarQubeReport;
+	}
+	
+	@Override
+	public SonarQubeReport getCoverageReport(String ciComponentId, String version) {
+		
+		CiComponentVersionEntity componentVersionEntity = versionService.findVersionWithNameForComponentId(version, ciComponentId);
+		
+		if (componentVersionEntity == null) {
+			return new SonarQubeReport();
+		}
+		
+//		CiComponentEntity componentEntity = componentService.findById(componentVersionEntity.getCiComponentId());
+		
+//		Temporary workaround as cannot use componentService.findById() as it requires new isActive flag which does not yet exist in ci_components collection
+		CiComponentEntity componentEntity = null;
+		
+		List<CiComponentEntity> componentEntityList = componentService.getAllComponentEntity();
+		for (CiComponentEntity entity : componentEntityList) {
+			if (entity.getId().equalsIgnoreCase(ciComponentId)) {
+				componentEntity = entity;
+				break;
+			}
+		}
+		
+		if (componentEntity == null) {
+			return new SonarQubeReport();
+		}
+		
+		logger.info("ciComponentName=" + componentEntity.getName() + ", ciComponentVersionId=" + componentVersionEntity.getId() + ", ciTeamId=" + componentEntity.getCiTeamId());
+		
+//		-------------------
+		
+		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiProjectVersions);
+		
+		String url = sb.toString().replace("{project}", componentEntity.getUcdComponentId());
+
+		final ResponseEntity<SonarQubeProjectVersions> SonarQubeProjectVersionsResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeProjectVersions.class);
+		SonarQubeProjectVersions sonarQubeProjectVersions = (SonarQubeProjectVersions) SonarQubeProjectVersionsResponse.getBody();
+		
+		String date = null;
+		
+		for (Analysis analysis : sonarQubeProjectVersions.getAnalyses()) {
+			for (Event event : analysis.getEvents()) {
+				if (event.getName().equalsIgnoreCase(version)) {
+					date = analysis.getDate();
+					break;
+				}
+			}
+		}
+		
+		if (date == null) {
+			return new SonarQubeReport();
+		}
+		
+		sb = new StringBuilder();
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsCoverage);
+		
+		url = sb.toString()
+				.replace("{component}", componentEntity.getUcdComponentId())
+				.replace("{from}", date)
+				.replace("{to}", date);
+		
+		final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeMeasuresReport.class);
+		SonarQubeMeasuresReport sonarQubeMeasuresReport = (SonarQubeMeasuresReport) sonarQubeMeasuresReportResponse.getBody();	
+		
+		Measures measures = new Measures();
+		for (Measure measure : sonarQubeMeasuresReport.getMeasures()) {			
+			for (History history : measure.getHistory()) {
+				switch (measure.getMetric()) {						
+				case "coverage":
+					measures.setCoverage(Double.valueOf(history.getValue()));
+					break;
+				case "lines_to_cover":
+					measures.setLinesToCover(Integer.valueOf(history.getValue()));
+					break;
+				case "uncovered_lines":
+					measures.setUncoveredLines(Integer.valueOf(history.getValue()));
+					break;
+				case "line_coverage":
+					measures.setLineCoverage(Double.valueOf(history.getValue()));
+					break;				
+				}				
+			}
+		}		
+		
+//		-------------------	
+		
+		SonarQubeReport sonarQubeReport = new SonarQubeReport();
+		sonarQubeReport.setIssues(null);
 		sonarQubeReport.setMeasures(measures);
 		
 		return sonarQubeReport;
