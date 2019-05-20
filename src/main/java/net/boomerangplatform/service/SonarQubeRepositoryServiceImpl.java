@@ -338,16 +338,16 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 					measures.setTestExecutionTime(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
 					break;					
 				case "coverage":
-					measures.setCoverage(Double.valueOf(history.getValue()));
+					measures.setCoverage(history.getValue() != null ? Double.valueOf(history.getValue()) : 0);
 					break;
 				case "lines_to_cover":
-					measures.setLinesToCover(Integer.valueOf(history.getValue()));
+					measures.setLinesToCover(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
 					break;
 				case "uncovered_lines":
-					measures.setUncoveredLines(Integer.valueOf(history.getValue()));
+					measures.setUncoveredLines(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
 					break;
 				case "line_coverage":
-					measures.setLineCoverage(Double.valueOf(history.getValue()));
+					measures.setLineCoverage(history.getValue() != null ? Double.valueOf(history.getValue()) : 0);
 					break;				
 				}				
 			}
