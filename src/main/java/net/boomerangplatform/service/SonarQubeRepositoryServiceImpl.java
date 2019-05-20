@@ -43,11 +43,8 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 	@Value("${sonarqube.url.api.metrics.violations}")
 	private String sonarqubeUrlApiMetricsViolations;
 	
-	@Value("${sonarqube.url.api.metrics.tests}")
-	private String sonarqubeUrlApiMetricsTests;
-	
-	@Value("${sonarqube.url.api.metrics.coverage}")
-	private String sonarqubeUrlApiMetricsCoverage;
+	@Value("${sonarqube.url.api.metrics.testcoverage}")
+	private String sonarqubeUrlApiMetricsTestCoverage;
 	
 	@Value("${sonarqube.url.api.project.versions}")
 	private String sonarqubeUrlApiProjectVersions;
@@ -153,7 +150,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 	}
 	
 	@Override
-	public SonarQubeReport getTestReport(String ciComponentId, String version) {
+	public SonarQubeReport getTestCoverageReport(String ciComponentId, String version) {
 		
 		CiComponentVersionEntity componentVersionEntity = versionService.findVersionWithNameForComponentId(version, ciComponentId);
 		
@@ -186,7 +183,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		String date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsTests);
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsTestCoverage);
 		
 		String url = sb.toString()
 				.replace("{component}", componentEntity.getUcdComponentId())
@@ -199,66 +196,6 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		SonarQubeMeasuresReport sonarQubeMeasuresReport = (SonarQubeMeasuresReport) sonarQubeMeasuresReportResponse.getBody();	
 		
 		Measures measures = getMeasures(sonarQubeMeasuresReport.getMeasures());			
-		
-//		-------------------	
-		
-		SonarQubeReport sonarQubeReport = new SonarQubeReport();
-		sonarQubeReport.setIssues(null);
-		sonarQubeReport.setMeasures(measures);
-		
-		return sonarQubeReport;
-	}
-	
-	@Override
-	public SonarQubeReport getCoverageReport(String ciComponentId, String version) {
-		
-		CiComponentVersionEntity componentVersionEntity = versionService.findVersionWithNameForComponentId(version, ciComponentId);
-		
-		if (componentVersionEntity == null) {
-			return new SonarQubeReport();
-		}
-		
-//		CiComponentEntity componentEntity = componentService.findById(componentVersionEntity.getCiComponentId());
-		
-//		Temporary workaround as cannot use componentService.findById() as it requires new isActive flag which does not yet exist in ci_components collection
-		CiComponentEntity componentEntity = null;
-		
-		List<CiComponentEntity> componentEntityList = componentService.getAllComponentEntity();
-		for (CiComponentEntity entity : componentEntityList) {
-			if (entity.getId().equalsIgnoreCase(ciComponentId)) {
-				componentEntity = entity;
-				break;
-			}
-		}
-		
-		if (componentEntity == null) {
-			return new SonarQubeReport();
-		}
-		
-		logger.info("ciComponentName=" + componentEntity.getName() + ", ciComponentVersionId=" + componentVersionEntity.getId() + ", ciTeamId=" + componentEntity.getCiTeamId());
-		
-//		-------------------
-		
-		String date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
-		
-		if (date == null) {
-			return new SonarQubeReport();
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsCoverage);
-		
-		String url = sb.toString()
-				.replace("{component}", componentEntity.getUcdComponentId())
-				.replace("{from}", date)
-				.replace("{to}", date);
-		
-		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
-		
-		final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeMeasuresReport.class);
-		SonarQubeMeasuresReport sonarQubeMeasuresReport = (SonarQubeMeasuresReport) sonarQubeMeasuresReportResponse.getBody();	
-		
-		Measures measures = getMeasures(sonarQubeMeasuresReport.getMeasures());	
 		
 //		-------------------	
 		
