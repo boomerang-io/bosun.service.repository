@@ -21,4 +21,18 @@ public class SonarQubeRepositoryController {
 			@RequestParam(value = "version", required = true) String version) {
 		return repositoryService.getReport(ciComponentId, version);
 	}
+	
+	@RequestMapping("/report/tests")
+	public SonarQubeReport getTestReport(
+			@RequestParam(value = "ciComponentId", required = true) String ciComponentId,
+			@RequestParam(value = "version", required = true) String version) {
+		return repositoryService.getTestReport(ciComponentId, version);
+	}
+	
+	@RequestMapping("/report/coverage")
+	public SonarQubeReport getCoverageReport(
+			@RequestParam(value = "ciComponentId", required = true) String ciComponentId,
+			@RequestParam(value = "version", required = true) String version) {
+		return repositoryService.getCoverageReport(ciComponentId, version);
+	}
 }
