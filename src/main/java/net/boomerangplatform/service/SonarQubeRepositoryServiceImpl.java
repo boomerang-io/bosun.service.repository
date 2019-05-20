@@ -110,58 +110,26 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		
 //		-------------------
 		
-		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiProjectVersions);
-		
-		String url = sb.toString().replace("{project}", componentEntity.getUcdComponentId());
-
-		final ResponseEntity<SonarQubeProjectVersions> SonarQubeProjectVersionsResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeProjectVersions.class);
-		SonarQubeProjectVersions sonarQubeProjectVersions = (SonarQubeProjectVersions) SonarQubeProjectVersionsResponse.getBody();
-		
-		String date = null;
-		
-		for (Analysis analysis : sonarQubeProjectVersions.getAnalyses()) {
-			for (Event event : analysis.getEvents()) {
-				if (event.getName().equalsIgnoreCase(version)) {
-					date = analysis.getDate();
-					break;
-				}
-			}
-		}
+		String date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
 		
 		if (date == null) {
 			return new SonarQubeReport();
 		}
 		
-		sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsViolations);
 		
-		url = sb.toString()
+		String url = sb.toString()
 				.replace("{component}", componentEntity.getUcdComponentId())
 				.replace("{from}", date)
 				.replace("{to}", date);
 		
+		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
+		
 		final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeMeasuresReport.class);
 		SonarQubeMeasuresReport sonarQubeMeasuresReport = (SonarQubeMeasuresReport) sonarQubeMeasuresReportResponse.getBody();	
 		
-		Measures measures = new Measures();
-		for (Measure measure : sonarQubeMeasuresReport.getMeasures()) {			
-			for (History history : measure.getHistory()) {
-				switch (measure.getMetric()) {						
-				case "ncloc":
-					measures.setNcloc(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
-					break;
-				case "complexity":
-					measures.setComplexity(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
-					break;
-				case "violations":
-					measures.setViolations(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
-					break;				
-				}				
-			}
-		}		
+		Measures measures = getMeasures(sonarQubeMeasuresReport.getMeasures());	
 		
 //		-------------------		
 		
@@ -175,56 +143,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		final ResponseEntity<SonarQubeIssuesReport> sonarQubeReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeIssuesReport.class);
 		SonarQubeIssuesReport sonarQubeIssuesReport = (SonarQubeIssuesReport) sonarQubeReportResponse.getBody();
 		
-		int total = 0;
-		int blocker = 0;
-		int critical = 0;
-		int major = 0;
-		int minor = 0;
-		int info = 0;
-		int filesAnalyzed = 0;
-		
-		for (SonarQubeIssue sonarQubeIssue : sonarQubeIssuesReport.getIssues()) {
-			if (sonarQubeIssue.getStatus().equalsIgnoreCase("open")) {
-				switch (sonarQubeIssue.getSeverity()) {
-                case "BLOCKER":
-                	blocker++;
-                	break;
-                case "CRITICAL":
-                	critical++; 
-                	break;
-                case "MAJOR": 
-                	major++; 
-                	break;
-                case "MINOR": 
-                	minor++; 
-                	break;
-                case "INFO": 
-                	info++; 
-                	break;
-				}
-				
-				total++;
-			}			
-		}
-		
-		for (IssueComponent issueComponent : sonarQubeIssuesReport.getComponents()) {
-			switch (issueComponent.getQualifier()) {
-			case "FIL": 
-				filesAnalyzed++;
-				break;
-			}
-		}
-		
-//		-------------------
-		
-		Issues issues = new Issues();
-		issues.setTotal(total);
-		issues.setBlocker(blocker);
-		issues.setCritical(critical);
-		issues.setMajor(major);
-		issues.setMinor(minor);
-		issues.setInfo(info);
-		issues.setFilesAnalyzed(filesAnalyzed);
+		Issues issues = getIssues(sonarQubeIssuesReport.getIssues(), sonarQubeIssuesReport.getComponents());
 			
 		SonarQubeReport sonarQubeReport = new SonarQubeReport();
 		sonarQubeReport.setIssues(issues);
@@ -257,7 +176,6 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		}
 		
 		if (componentEntity == null) {
-			logger.info("getTestReport-componentEntity == null");
 			return new SonarQubeReport();
 		}
 		
@@ -265,68 +183,22 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		
 //		-------------------
 		
-		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
+		String date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiProjectVersions);
-		
-		String url = sb.toString().replace("{project}", componentEntity.getUcdComponentId());
-
-		final ResponseEntity<SonarQubeProjectVersions> SonarQubeProjectVersionsResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeProjectVersions.class);
-		SonarQubeProjectVersions sonarQubeProjectVersions = (SonarQubeProjectVersions) SonarQubeProjectVersionsResponse.getBody();
-		
-		String date = null;
-		
-		for (Analysis analysis : sonarQubeProjectVersions.getAnalyses()) {
-			for (Event event : analysis.getEvents()) {
-				if (event.getName().equalsIgnoreCase(version)) {
-					date = analysis.getDate();
-					break;
-				}
-			}
-		}
-		
-		if (date == null) {
-			logger.info("getTestReport-date == null");
-			return new SonarQubeReport();
-		}
-		
-		sb = new StringBuilder();
 		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsTests);
 		
-		url = sb.toString()
+		String url = sb.toString()
 				.replace("{component}", componentEntity.getUcdComponentId())
 				.replace("{from}", date)
 				.replace("{to}", date);
 		
+		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
+		
 		final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeMeasuresReport.class);
 		SonarQubeMeasuresReport sonarQubeMeasuresReport = (SonarQubeMeasuresReport) sonarQubeMeasuresReportResponse.getBody();	
 		
-		Measures measures = new Measures();
-		for (Measure measure : sonarQubeMeasuresReport.getMeasures()) {			
-			for (History history : measure.getHistory()) {
-				switch (measure.getMetric()) {						
-				case "tests":
-					measures.setTests(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
-					break;
-				case "test_errors":
-					measures.setTestErrors(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
-					break;
-				case "test_failures":
-					measures.setTestFailures(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
-					break;
-				case "skipped_tests":
-					measures.setSkippedTests(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
-					break;	
-				case "test_success_density":
-					measures.setTestSuccessDensity(history.getValue() != null ? Double.valueOf(history.getValue()) : 0);
-					break;	
-				case "test_execution_time":
-					measures.setTestExecutionTime(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
-					break;						
-				}				
-			}
-		}		
+		Measures measures = getMeasures(sonarQubeMeasuresReport.getMeasures());			
 		
 //		-------------------	
 		
@@ -367,61 +239,26 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		
 //		-------------------
 		
-		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiProjectVersions);
-		
-		String url = sb.toString().replace("{project}", componentEntity.getUcdComponentId());
-
-		final ResponseEntity<SonarQubeProjectVersions> SonarQubeProjectVersionsResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeProjectVersions.class);
-		SonarQubeProjectVersions sonarQubeProjectVersions = (SonarQubeProjectVersions) SonarQubeProjectVersionsResponse.getBody();
-		
-		String date = null;
-		
-		for (Analysis analysis : sonarQubeProjectVersions.getAnalyses()) {
-			for (Event event : analysis.getEvents()) {
-				if (event.getName().equalsIgnoreCase(version)) {
-					date = analysis.getDate();
-					break;
-				}
-			}
-		}
+		String date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
 		
 		if (date == null) {
 			return new SonarQubeReport();
 		}
 		
-		sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsCoverage);
 		
-		url = sb.toString()
+		String url = sb.toString()
 				.replace("{component}", componentEntity.getUcdComponentId())
 				.replace("{from}", date)
 				.replace("{to}", date);
 		
+		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
+		
 		final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeMeasuresReport.class);
 		SonarQubeMeasuresReport sonarQubeMeasuresReport = (SonarQubeMeasuresReport) sonarQubeMeasuresReportResponse.getBody();	
 		
-		Measures measures = new Measures();
-		for (Measure measure : sonarQubeMeasuresReport.getMeasures()) {			
-			for (History history : measure.getHistory()) {
-				switch (measure.getMetric()) {						
-				case "coverage":
-					measures.setCoverage(Double.valueOf(history.getValue()));
-					break;
-				case "lines_to_cover":
-					measures.setLinesToCover(Integer.valueOf(history.getValue()));
-					break;
-				case "uncovered_lines":
-					measures.setUncoveredLines(Integer.valueOf(history.getValue()));
-					break;
-				case "line_coverage":
-					measures.setLineCoverage(Double.valueOf(history.getValue()));
-					break;				
-				}				
-			}
-		}		
+		Measures measures = getMeasures(sonarQubeMeasuresReport.getMeasures());	
 		
 //		-------------------	
 		
@@ -443,5 +280,130 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
         headers.add("Authorization", "Basic " + base64Creds);
         
         return headers;
+	}
+	
+	private String getSonarQubeDateForVersion(String project, String version) {
+		
+		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiProjectVersions);
+		
+		String url = sb.toString().replace("{project}", project);
+
+		final ResponseEntity<SonarQubeProjectVersions> SonarQubeProjectVersionsResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeProjectVersions.class);
+		SonarQubeProjectVersions sonarQubeProjectVersions = (SonarQubeProjectVersions) SonarQubeProjectVersionsResponse.getBody();
+		
+		for (Analysis analysis : sonarQubeProjectVersions.getAnalyses()) {
+			for (Event event : analysis.getEvents()) {
+				if (event.getName().equalsIgnoreCase(version)) {
+					return analysis.getDate();
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	private Measures getMeasures(List<Measure> measureList) {		
+		Measures measures = new Measures();
+		for (Measure measure : measureList) {			
+			for (History history : measure.getHistory()) {
+				switch (measure.getMetric()) {
+				case "ncloc":
+					measures.setNcloc(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;
+				case "complexity":
+					measures.setComplexity(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;
+				case "violations":
+					measures.setViolations(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;					
+				case "tests":
+					measures.setTests(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;
+				case "test_errors":
+					measures.setTestErrors(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;
+				case "test_failures":
+					measures.setTestFailures(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;
+				case "skipped_tests":
+					measures.setSkippedTests(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;	
+				case "test_success_density":
+					measures.setTestSuccessDensity(history.getValue() != null ? Double.valueOf(history.getValue()) : 0);
+					break;	
+				case "test_execution_time":
+					measures.setTestExecutionTime(history.getValue() != null ? Integer.valueOf(history.getValue()) : 0);
+					break;					
+				case "coverage":
+					measures.setCoverage(Double.valueOf(history.getValue()));
+					break;
+				case "lines_to_cover":
+					measures.setLinesToCover(Integer.valueOf(history.getValue()));
+					break;
+				case "uncovered_lines":
+					measures.setUncoveredLines(Integer.valueOf(history.getValue()));
+					break;
+				case "line_coverage":
+					measures.setLineCoverage(Double.valueOf(history.getValue()));
+					break;				
+				}				
+			}
+		}		
+		return measures;
+	}
+	
+	private Issues getIssues(List<SonarQubeIssue> sonarQubeIssues, List<IssueComponent> issueComponents) {
+		int total = 0;
+		int blocker = 0;
+		int critical = 0;
+		int major = 0;
+		int minor = 0;
+		int info = 0;
+		int filesAnalyzed = 0;
+		
+		for (SonarQubeIssue sonarQubeIssue : sonarQubeIssues) {
+			if (sonarQubeIssue.getStatus().equalsIgnoreCase("open")) {
+				switch (sonarQubeIssue.getSeverity()) {
+                case "BLOCKER":
+                	blocker++;
+                	break;
+                case "CRITICAL":
+                	critical++; 
+                	break;
+                case "MAJOR": 
+                	major++; 
+                	break;
+                case "MINOR": 
+                	minor++; 
+                	break;
+                case "INFO": 
+                	info++; 
+                	break;
+				}				
+				total++;
+			}			
+		}
+		
+		for (IssueComponent issueComponent : issueComponents) {
+			switch (issueComponent.getQualifier()) {
+			case "FIL": 
+				filesAnalyzed++;
+				break;
+			}
+		}
+		
+		Issues issues = new Issues();
+		issues.setTotal(total);
+		issues.setBlocker(blocker);
+		issues.setCritical(critical);
+		issues.setMajor(major);
+		issues.setMinor(minor);
+		issues.setInfo(info);
+		issues.setFilesAnalyzed(filesAnalyzed);
+		
+		return issues;
 	}
 }
