@@ -144,7 +144,7 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 		
 		logger.info("ciTeamName=" + teamEntity.getName());
 		
-		String org = teamEntity.getName().toLowerCase().replaceAll("\\s+", "-");
+		String org = teamEntity.getName().toLowerCase().replaceAll("\\s+", "");
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(boomerangArtifactoryId).append("/").append(boomerangRepoDocker).append("/").append(org).append("/").append(dockerImageName).append("/").append(version);
