@@ -110,8 +110,8 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 			}
 		}
 		
-		// Currently only supports Java with Docker
-		if (!mode.equalsIgnoreCase("java") || !isDocker) {
+		// Currently only supports Docker
+		if (!isDocker) {
 			return new DependencyGraph();
 		}
 		
@@ -179,7 +179,7 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 				for (Component packageComponent : artifactComponent.getComponents()) {
 
 					// Skip all non-maven dependencies
-					if (packageComponent.getPackageType().equalsIgnoreCase("maven")) {					
+//					if (packageComponent.getPackageType().equalsIgnoreCase("maven")) {					
 						logger.info("packageComponent=" + packageComponent.getComponentName() + ", type=" + packageComponent.getPackageType());						
 						
 						Component component = new Component();					
@@ -209,7 +209,7 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 						}
 						
 						componentMap.put(packageComponent.getComponentName(), component);		
-					}									
+//					}									
 				}	
 			}
 		}
@@ -251,8 +251,8 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 			}
 		}
 		
-		// Currently only supports Java with Docker
-		if (!mode.equalsIgnoreCase("java") || !isDocker) {
+		// Currently only supports Docker
+		if (!isDocker) {
 			return new ArtifactSummary();
 		}
 		
@@ -285,7 +285,7 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 		
 		logger.info("ciTeamName=" + teamEntity.getName());
 		
-		String org = teamEntity.getName().toLowerCase().replaceAll("\\s+", "-");
+		String org = teamEntity.getName().toLowerCase().replaceAll("\\s+", "");
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(boomerangArtifactoryId).append("/").append(boomerangRepoDocker).append("/").append(org).append("/").append(dockerImageName).append("/").append(version);
