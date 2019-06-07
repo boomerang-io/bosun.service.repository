@@ -1,5 +1,9 @@
 package net.boomerangplatform.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
@@ -107,7 +111,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		
 //		-------------------
 		
-		String date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
+		Date date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
 		
 		if (date == null) {
 			return new SonarQubeReport();
@@ -118,8 +122,8 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		
 		String url = sb.toString()
 				.replace("{component}", componentEntity.getUcdComponentId())
-				.replace("{from}", date)
-				.replace("{to}", date);
+				.replace("{from}", dateToString(date))
+				.replace("{to}", dateToString(date));
 		
 		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
 		
@@ -135,7 +139,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		
 		url = sb.toString()
 				.replace("{componentKeys}", componentEntity.getUcdComponentId())
-				.replace("{createdBefore}", date);
+				.replace("{createdBefore}", dateToString(addSecond(date)));
 
 		final ResponseEntity<SonarQubeIssuesReport> sonarQubeReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeIssuesReport.class);
 		SonarQubeIssuesReport sonarQubeIssuesReport = (SonarQubeIssuesReport) sonarQubeReportResponse.getBody();
@@ -180,15 +184,15 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		
 //		-------------------
 		
-		String date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
+		Date date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsTestCoverage);
 		
 		String url = sb.toString()
 				.replace("{component}", componentEntity.getUcdComponentId())
-				.replace("{from}", date)
-				.replace("{to}", date);
+				.replace("{from}", dateToString(date))
+				.replace("{to}", dateToString(date));
 		
 		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
 		
@@ -219,7 +223,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
         return headers;
 	}
 	
-	private String getSonarQubeDateForVersion(String project, String version) {
+	private Date getSonarQubeDateForVersion(String project, String version) {
 		
 		final HttpEntity<?> request = new HttpEntity<>(getHeaders());
 		
@@ -342,5 +346,14 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		issues.setFilesAnalyzed(filesAnalyzed);
 		
 		return issues;
+	}
+	
+	private String dateToString(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");  
+        return dateFormat.format(date);  
+	}
+	
+	private Date addSecond(Date date) {
+		return new Date(date.getTime() + 1000L);
 	}
 }

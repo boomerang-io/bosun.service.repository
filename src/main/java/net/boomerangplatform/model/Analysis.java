@@ -1,6 +1,7 @@
 package net.boomerangplatform.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -13,7 +14,7 @@ public class Analysis {
 	private String key;
 	
 	@JsonProperty("date")
-	private String date;
+	private Date date;
 	
 	@JsonProperty("events")
 	private List<Event> events;
@@ -30,11 +31,11 @@ public class Analysis {
 		this.key = key;
 	}
 
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
