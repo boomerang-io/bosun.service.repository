@@ -111,7 +111,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		
 //		-------------------
 		
-		Date date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
+		Date date = getSonarQubeDateForVersion(componentEntity.getId(), version);
 		
 		if (date == null) {
 			return new SonarQubeReport();
@@ -121,7 +121,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsViolations);
 		
 		String url = sb.toString()
-				.replace("{component}", componentEntity.getUcdComponentId())
+				.replace("{component}", componentEntity.getId())
 				.replace("{from}", dateToString(date))
 				.replace("{to}", dateToString(date));
 		
@@ -138,7 +138,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiIssuesVersion);
 		
 		url = sb.toString()
-				.replace("{componentKeys}", componentEntity.getUcdComponentId())
+				.replace("{componentKeys}", componentEntity.getId())
 				.replace("{createdBefore}", dateToString(addSecond(date)));
 
 		final ResponseEntity<SonarQubeIssuesReport> sonarQubeReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeIssuesReport.class);
@@ -184,13 +184,13 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		
 //		-------------------
 		
-		Date date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
+		Date date = getSonarQubeDateForVersion(componentEntity.getId(), version);
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion).append(sonarqubeUrlApiMetricsTestCoverage);
 		
 		String url = sb.toString()
-				.replace("{component}", componentEntity.getUcdComponentId())
+				.replace("{component}", componentEntity.getId())
 				.replace("{from}", dateToString(date))
 				.replace("{to}", dateToString(date));
 		
