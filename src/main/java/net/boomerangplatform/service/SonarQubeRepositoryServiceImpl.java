@@ -26,6 +26,7 @@ import net.boomerangplatform.model.IssueComponent;
 import net.boomerangplatform.model.Issues;
 import net.boomerangplatform.model.Measure;
 import net.boomerangplatform.model.Measures;
+import net.boomerangplatform.model.SonarQubeDetailReport;
 import net.boomerangplatform.model.SonarQubeIssue;
 import net.boomerangplatform.model.SonarQubeIssuesReport;
 import net.boomerangplatform.model.SonarQubeMeasuresReport;
@@ -67,6 +68,9 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 	
 	@Value("${sonarqube.boomerang.apitoken}")
 	private String sonarqubeBoomerangApitoken;	
+	
+	@Value("${sonarqube.url.api.measures.componenttree}")
+	private String sonarqubeUrlApiMeasuresComponentTree;
 
 	@Autowired
 	@Qualifier("internalRestTemplate")
@@ -210,6 +214,53 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 		return sonarQubeReport;
 	}
 
+	@Override
+    public SonarQubeDetailReport getDetailTestCoverageReport(String ciComponentId, String version) {
+        
+        CiComponentVersionEntity componentVersionEntity = versionService.findVersionWithNameForComponentId(version, ciComponentId);
+        
+        if (componentVersionEntity == null) {
+            logger.info("getDetailTestReport-componentVersionEntity == null");
+            return new SonarQubeDetailReport();
+        }
+        
+//      CiComponentEntity componentEntity = componentService.findById(componentVersionEntity.getCiComponentId());
+        
+//      Temporary workaround as cannot use componentService.findById() as it requires new isActive flag which does not yet exist in ci_components collection
+        CiComponentEntity componentEntity = null;
+        
+        List<CiComponentEntity> componentEntityList = componentService.getAllComponentEntity();
+        for (CiComponentEntity entity : componentEntityList) {
+            if (entity.getId().equalsIgnoreCase(ciComponentId)) {
+                componentEntity = entity;
+                break;
+            }
+        }
+        
+        if (componentEntity == null) {
+            return new SonarQubeDetailReport();
+        }
+        
+        logger.info("ciComponentName=" + componentEntity.getName() + ", ciComponentVersionId=" + componentVersionEntity.getId() + ", ciTeamId=" + componentEntity.getCiTeamId());
+        
+//      -------------------
+        
+        Date date = getSonarQubeDateForVersion(componentEntity.getUcdComponentId(), version);
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresComponentTree).append(sonarqubeUrlApiMetricsTestCoverage);
+        
+        String url = sb.toString()
+                .replace("{component}", componentEntity.getUcdComponentId());
+        
+        final HttpEntity<?> request = new HttpEntity<>(getHeaders());
+        
+        final ResponseEntity<SonarQubeDetailReport> sonarQubeDetailReportResponse = internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeDetailReport.class);
+        SonarQubeDetailReport sonarQubeDetailReport = (SonarQubeDetailReport) sonarQubeDetailReportResponse.getBody();  
+        
+        return sonarQubeDetailReport;
+    }
+	
 	private HttpHeaders getHeaders() {
         final String plainCreds = sonarqubeBoomerangApitoken + ":";
         final byte[] plainCredsBytes = plainCreds.getBytes();
