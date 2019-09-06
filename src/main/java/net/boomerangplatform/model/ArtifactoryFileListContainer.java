@@ -1,37 +1,34 @@
 package net.boomerangplatform.model;
 
-import java.util.ArrayList;
-
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ArtifactoryFileListContainer {
 
-	@JsonProperty("children")
-	private ArrayList<ArtifactoryFile> children;
-	
-	@JsonProperty("created")
-	private String created;
-	
-	public ArtifactoryFileListContainer(){
-		
-	}
+  private List<ArtifactoryFile> children;
 
-	public ArrayList<ArtifactoryFile> getChildren() {
-		return children;
-	}
+  private String created;
 
-	public void setChildren(ArrayList<ArtifactoryFile> children) {
-		this.children = children;
-	}
+  public ArtifactoryFileListContainer() {
+    // Do nothing
+  }
 
-	public String getCreated() {
-		return created;
-	}
+  public List<ArtifactoryFile> getChildren() {
+    return sanityEmptyList(children);
+  }
 
-	public void setCreated(String created) {
-		this.created = created;
-	}
+  public void setChildren(List<ArtifactoryFile> children) {
+    this.children = sanityEmptyList(children);
+  }
+
+  public String getCreated() {
+    return created;
+  }
+
+  public void setCreated(String created) {
+    this.created = created;
+  }
 
 }

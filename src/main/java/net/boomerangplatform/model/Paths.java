@@ -1,29 +1,25 @@
 package net.boomerangplatform.model;
 
-import java.util.ArrayList;
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Paths {
 
-	@JsonProperty("paths")
-	private List<String> paths;
-	
-	public Paths() {
-		
-	}
+  @JsonProperty("paths")
+  private List<String> uris;
 
-	public List<String> getPaths() {
-		if (paths == null) {
-			paths = new ArrayList<String>();
-		}
-		return paths;
-	}
+  public Paths() {
+    // Do nothing
+  }
 
-	public void setPaths(List<String> paths) {
-		this.paths = paths;
-	}
+  public List<String> getUris() {
+    return sanityEmptyList(uris);
+  }
+
+  public void setUris(List<String> paths) {
+    this.uris = sanityEmptyList(paths);
+  }
 }

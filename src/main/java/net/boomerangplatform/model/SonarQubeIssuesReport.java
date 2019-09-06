@@ -1,123 +1,103 @@
 package net.boomerangplatform.model;
 
-import java.util.ArrayList;
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SonarQubeIssuesReport {
 
-	@JsonProperty("total")
-	private Integer total;
-	
-	@JsonProperty("p")
-	private Integer p;
-	
-	@JsonProperty("ps")
-	private Integer ps;
-	
-	@JsonProperty("paging")
-	private Paging paging;
-	
-	@JsonProperty("effortTotal")
-	private Integer effortTotal;
-	
-	@JsonProperty("debtTotal")
-	private Integer debtTotal;
-	
-	@JsonProperty("issues")
-	private List<SonarQubeIssue> issues = null;
-	
-	@JsonProperty("components")
-	private List<IssueComponent> components = null;
-	
-	@JsonProperty("facets")
-	private List<String> facets;
-	
-	public SonarQubeIssuesReport() {
-		
-	}
+  private Integer total;
 
-	public Integer getTotal() {
-		return total;
-	}
+  private Integer p;
 
-	public void setTotal(Integer total) {
-		this.total = total;
-	}
+  private Integer ps;
 
-	public Integer getP() {
-		return p;
-	}
+  private Paging paging;
 
-	public void setP(Integer p) {
-		this.p = p;
-	}
+  private Integer effortTotal;
 
-	public Integer getPs() {
-		return ps;
-	}
+  private Integer debtTotal;
 
-	public void setPs(Integer ps) {
-		this.ps = ps;
-	}
+  private List<SonarQubeIssue> issues;
 
-	public Paging getPaging() {
-		return paging;
-	}
+  private List<IssueComponent> components;
 
-	public void setPaging(Paging paging) {
-		this.paging = paging;
-	}
+  private List<String> facets;
 
-	public Integer getEffortTotal() {
-		return effortTotal;
-	}
+  public SonarQubeIssuesReport() {
+    // Do nothing
+  }
 
-	public void setEffortTotal(Integer effortTotal) {
-		this.effortTotal = effortTotal;
-	}
+  public Integer getTotal() {
+    return total;
+  }
 
-	public Integer getDebtTotal() {
-		return debtTotal;
-	}
+  public void setTotal(Integer total) {
+    this.total = total;
+  }
 
-	public void setDebtTotal(Integer debtTotal) {
-		this.debtTotal = debtTotal;
-	}
+  public Integer getP() {
+    return p;
+  }
 
-	public List<SonarQubeIssue> getIssues() {
-		if (issues == null) {
-			issues = new ArrayList<SonarQubeIssue>();
-		}
-		return issues;
-	}
+  public void setP(Integer p) {
+    this.p = p;
+  }
 
-	public void setIssues(List<SonarQubeIssue> issues) {
-		this.issues = issues;
-	}
+  public Integer getPs() {
+    return ps;
+  }
 
-	public List<IssueComponent> getComponents() {
-		if (components == null) {
-			components = new ArrayList<IssueComponent>();
-		}		
-		return components;
-	}
+  public void setPs(Integer ps) {
+    this.ps = ps;
+  }
 
-	public void setComponents(List<IssueComponent> components) {
-		this.components = components;
-	}
+  public Paging getPaging() {
+    return paging;
+  }
 
-	public List<String> getFacets() {
-		if (facets == null) {
-			facets = new ArrayList<String>();
-		}			
-		return facets;
-	}
+  public void setPaging(Paging paging) {
+    this.paging = paging;
+  }
 
-	public void setFacets(List<String> facets) {
-		this.facets = facets;
-	}
+  public Integer getEffortTotal() {
+    return effortTotal;
+  }
+
+  public void setEffortTotal(Integer effortTotal) {
+    this.effortTotal = effortTotal;
+  }
+
+  public Integer getDebtTotal() {
+    return debtTotal;
+  }
+
+  public void setDebtTotal(Integer debtTotal) {
+    this.debtTotal = debtTotal;
+  }
+
+  public List<SonarQubeIssue> getIssues() {
+    return sanityEmptyList(issues);
+  }
+
+  public void setIssues(List<SonarQubeIssue> issues) {
+    this.issues = sanityEmptyList(issues);
+  }
+
+  public List<IssueComponent> getComponents() {
+    return sanityEmptyList(components);
+  }
+
+  public void setComponents(List<IssueComponent> components) {
+    this.components = sanityEmptyList(components);
+  }
+
+  public List<String> getFacets() {
+    return sanityEmptyList(facets);
+  }
+
+  public void setFacets(List<String> facets) {
+    this.facets = sanityEmptyList(facets);
+  }
 }

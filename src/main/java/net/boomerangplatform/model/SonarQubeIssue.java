@@ -1,235 +1,212 @@
 package net.boomerangplatform.model;
 
+import static net.boomerangplatform.util.ListUtil.sanityNullList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SonarQubeIssue {
+public class SonarQubeIssue { // NOSONAR
 
-	@JsonProperty("key")
-	private String key;
-	@JsonProperty("rule")
-	private String rule;
-	@JsonProperty("severity")
-	private String severity;
-	@JsonProperty("component")
-	private String component;
-	@JsonProperty("project")
-	private String project;
-	@JsonProperty("line")
-	private Integer line;
-	@JsonProperty("hash")
-	private String hash;
-	@JsonProperty("textRange")
-	private TextRange textRange;
-	@JsonProperty("flows")
-	private List<Flow> flows;
-	@JsonProperty("status")
-	private String status;
-	@JsonProperty("message")
-	private String message;
-	@JsonProperty("effort")
-	private String effort;
-	@JsonProperty("debt")
-	private String debt;
-	@JsonProperty("author")
-	private String author;
-	@JsonProperty("tags")
-	private List<String> tags;
-	@JsonProperty("creationDate")
-	private String creationDate;
-	@JsonProperty("updateDate")
-	private String updateDate;
-	@JsonProperty("type")
-	private String type;
-	@JsonProperty("organization")
-	private String organization;
-	@JsonProperty("fromHotspot")
-	private Boolean fromHotspot;
-	@JsonProperty("resolution")
-	private String resolution;
-	@JsonProperty("closeDate")
-	private String closeDate;
-	
-	public SonarQubeIssue() {
-		
-	}
+  private String key;
+  private String rule;
+  private String severity;
+  private String component;
+  private String project;
+  private Integer line;
+  private String hash;
+  private TextRange textRange;
+  private List<Flow> flows;
+  private String status;
+  private String message;
+  private String effort;
+  private String debt;
+  private String author;
+  private List<String> tags;
+  private String creationDate;
+  private String updateDate;
+  private String type;
+  private String organization;
+  private Boolean fromHotspot;
+  private String resolution;
+  private String closeDate;
 
-	public String getKey() {
-		return key;
-	}
+  public SonarQubeIssue() {
+    // Do nothing
+  }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+  public String getKey() {
+    return key;
+  }
 
-	public String getRule() {
-		return rule;
-	}
+  public void setKey(String key) {
+    this.key = key;
+  }
 
-	public void setRule(String rule) {
-		this.rule = rule;
-	}
+  public String getRule() {
+    return rule;
+  }
 
-	public String getSeverity() {
-		return severity;
-	}
+  public void setRule(String rule) {
+    this.rule = rule;
+  }
 
-	public void setSeverity(String severity) {
-		this.severity = severity;
-	}
+  public String getSeverity() {
+    return severity;
+  }
 
-	public String getComponent() {
-		return component;
-	}
+  public void setSeverity(String severity) {
+    this.severity = severity;
+  }
 
-	public void setComponent(String component) {
-		this.component = component;
-	}
+  public String getComponent() {
+    return component;
+  }
 
-	public String getProject() {
-		return project;
-	}
+  public void setComponent(String component) {
+    this.component = component;
+  }
 
-	public void setProject(String project) {
-		this.project = project;
-	}
+  public String getProject() {
+    return project;
+  }
 
-	public Integer getLine() {
-		return line;
-	}
+  public void setProject(String project) {
+    this.project = project;
+  }
 
-	public void setLine(Integer line) {
-		this.line = line;
-	}
+  public Integer getLine() {
+    return line;
+  }
 
-	public String getHash() {
-		return hash;
-	}
+  public void setLine(Integer line) {
+    this.line = line;
+  }
 
-	public void setHash(String hash) {
-		this.hash = hash;
-	}
+  public String getHash() {
+    return hash;
+  }
 
-	public TextRange getTextRange() {
-		return textRange;
-	}
+  public void setHash(String hash) {
+    this.hash = hash;
+  }
 
-	public void setTextRange(TextRange textRange) {
-		this.textRange = textRange;
-	}
+  public TextRange getTextRange() {
+    return textRange;
+  }
 
-	public List<Flow> getFlows() {
-		return flows;
-	}
+  public void setTextRange(TextRange textRange) {
+    this.textRange = textRange;
+  }
 
-	public void setFlows(List<Flow> flows) {
-		this.flows = flows;
-	}
+  public List<Flow> getFlows() {
+    return sanityNullList(flows);
+  }
 
-	public String getStatus() {
-		return status;
-	}
+  public void setFlows(List<Flow> flows) {
+    this.flows = sanityNullList(flows);
+  }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+  public String getStatus() {
+    return status;
+  }
 
-	public String getMessage() {
-		return message;
-	}
+  public void setStatus(String status) {
+    this.status = status;
+  }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+  public String getMessage() {
+    return message;
+  }
 
-	public String getEffort() {
-		return effort;
-	}
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-	public void setEffort(String effort) {
-		this.effort = effort;
-	}
+  public String getEffort() {
+    return effort;
+  }
 
-	public String getDebt() {
-		return debt;
-	}
+  public void setEffort(String effort) {
+    this.effort = effort;
+  }
 
-	public void setDebt(String debt) {
-		this.debt = debt;
-	}
+  public String getDebt() {
+    return debt;
+  }
 
-	public String getAuthor() {
-		return author;
-	}
+  public void setDebt(String debt) {
+    this.debt = debt;
+  }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+  public String getAuthor() {
+    return author;
+  }
 
-	public List<String> getTags() {
-		return tags;
-	}
+  public void setAuthor(String author) {
+    this.author = author;
+  }
 
-	public void setTags(List<String> tags) {
-		this.tags = tags;
-	}
+  public List<String> getTags() {
+    return sanityNullList(tags);
+  }
 
-	public String getCreationDate() {
-		return creationDate;
-	}
+  public void setTags(List<String> tags) {
+    this.tags = sanityNullList(tags);
+  }
 
-	public void setCreationDate(String creationDate) {
-		this.creationDate = creationDate;
-	}
+  public String getCreationDate() {
+    return creationDate;
+  }
 
-	public String getUpdateDate() {
-		return updateDate;
-	}
+  public void setCreationDate(String creationDate) {
+    this.creationDate = creationDate;
+  }
 
-	public void setUpdateDate(String updateDate) {
-		this.updateDate = updateDate;
-	}
+  public String getUpdateDate() {
+    return updateDate;
+  }
 
-	public String getType() {
-		return type;
-	}
+  public void setUpdateDate(String updateDate) {
+    this.updateDate = updateDate;
+  }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+  public String getType() {
+    return type;
+  }
 
-	public String getOrganization() {
-		return organization;
-	}
+  public void setType(String type) {
+    this.type = type;
+  }
 
-	public void setOrganization(String organization) {
-		this.organization = organization;
-	}
+  public String getOrganization() {
+    return organization;
+  }
 
-	public Boolean getFromHotspot() {
-		return fromHotspot;
-	}
+  public void setOrganization(String organization) {
+    this.organization = organization;
+  }
 
-	public void setFromHotspot(Boolean fromHotspot) {
-		this.fromHotspot = fromHotspot;
-	}
+  public Boolean getFromHotspot() {
+    return fromHotspot;
+  }
 
-	public String getResolution() {
-		return resolution;
-	}
+  public void setFromHotspot(Boolean fromHotspot) {
+    this.fromHotspot = fromHotspot;
+  }
 
-	public void setResolution(String resolution) {
-		this.resolution = resolution;
-	}
+  public String getResolution() {
+    return resolution;
+  }
 
-	public String getCloseDate() {
-		return closeDate;
-	}
+  public void setResolution(String resolution) {
+    this.resolution = resolution;
+  }
 
-	public void setCloseDate(String closeDate) {
-		this.closeDate = closeDate;
-	}
+  public String getCloseDate() {
+    return closeDate;
+  }
+
+  public void setCloseDate(String closeDate) {
+    this.closeDate = closeDate;
+  }
 }

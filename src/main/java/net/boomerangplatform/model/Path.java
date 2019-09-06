@@ -6,18 +6,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Path {
 
-	@JsonProperty("path")
-	private String path;
-	
-	public Path() {
-		
-	}
+  @JsonProperty("path")
+  private String uri;
 
-	public String getPath() {
-		return path;
-	}
+  public Path() {
+    // Do nothing
+  }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+  public String getUri() {
+    return uri;
+  }
+
+  public void setUri(String path) {
+    this.uri = path;
+  }
 }

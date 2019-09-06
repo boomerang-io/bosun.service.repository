@@ -1,0 +1,74 @@
+{
+    "_id" : ObjectId("5b9ad0236c06060f7f5d35de"),
+    "_class" : "net.boomerangplatform.mongo.entity.SettingsEntity",
+    "config" : [ 
+        {
+            "description" : "artifactory.url",
+            "key" : "artifactory.url",
+            "label" : "Artifactory REST URL",
+            "type" : "text",
+            "value" : "https://tools.boomerangplatform.net/artifactory"
+        }, 
+        {
+            "description" : "artifactory.apikey",
+            "key" : "artifactory.apikey",
+            "label" : "Artifactory API Key",
+            "type" : "secured",
+            "value" : "AKCp2VpEQT6n8HvSMNoutUQwcfgBv9bY8TuLpc8aserxRRz7YRdR7jYTBR7Tgg9WUEpK54EJ5"
+        }, 
+        {
+            "description" : "urbancode.rest.user",
+            "key" : "urbancode.rest.user",
+            "label" : "Urbancode Rest User",
+            "type" : "text",
+            "value" : "bmrgapiuser"
+        }, 
+        {
+            "description" : "urbancode.rest.password",
+            "key" : "urbancode.rest.password",
+            "label" : "Urbancode Rest Password",
+            "type" : "secured",
+            "value" : "IafYdsTTA!"
+        }, 
+        {
+            "description" : "urbancode.rest.url.base.cli",
+            "key" : "urbancode.rest.url.base.cli",
+            "label" : "Urbancode Rest URL Base CLI",
+            "type" : "text",
+            "value" : "https://10.190.20.147:8443/cli"
+        }, 
+        {
+            "description" : "urbancode.rest.url.base",
+            "key" : "urbancode.rest.url.base",
+            "label" : "Urbancode Rest URL Base",
+            "type" : "text",
+            "value" : "https://10.190.20.147:8443"
+        }, 
+        {
+            "description" : "spring.datasource.url",
+            "key" : "spring.datasource.url",
+            "label" : "Spring Datasource Url",
+            "type" : "text",
+            "value" : "jdbc:mysql://9.42.41.228:3306/ibm_ucd"
+        }, 
+        {
+            "description" : "spring.datasource.username",
+            "key" : "spring.datasource.username",
+            "label" : "Spring Datasource Username",
+            "type" : "text",
+            "value" : "ibm_ucd"
+        }, 
+        {
+            "description" : "spring.datasource.password",
+            "key" : "spring.datasource.password",
+            "label" : "Spring Datasource Password",
+            "type" : "secured",
+            "value" : "Ms6KNrPj!"
+        }
+    ],
+    "description" : "Configure continuous integration and conditions delivery options for Boomerang Platform.",
+    "key" : "cicd",
+    "lastModiifed" : ISODate("2019-01-31T16:07:30.499Z"),
+    "name" : "Continuous Integration",
+    "type" : "ValuesList"
+}

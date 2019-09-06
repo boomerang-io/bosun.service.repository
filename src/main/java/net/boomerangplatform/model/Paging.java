@@ -1,45 +1,41 @@
 package net.boomerangplatform.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Paging {
 
-	@JsonProperty("pageIndex")
-	private Integer pageIndex;
-	
-	@JsonProperty("pageSize")
-	private Integer pageSize;
-	
-	@JsonProperty("total")
-	private Integer total;
-	
-	public Paging() {
-		
-	}
+  private Integer pageIndex;
 
-	public Integer getPageIndex() {
-		return pageIndex;
-	}
+  private Integer pageSize;
 
-	public void setPageIndex(Integer pageIndex) {
-		this.pageIndex = pageIndex;
-	}
+  private Integer total;
 
-	public Integer getPageSize() {
-		return pageSize;
-	}
+  public Paging() {
+    // Do nothing
+  }
 
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
+  public Integer getPageIndex() {
+    return pageIndex;
+  }
 
-	public Integer getTotal() {
-		return total;
-	}
+  public void setPageIndex(Integer pageIndex) {
+    this.pageIndex = pageIndex;
+  }
 
-	public void setTotal(Integer total) {
-		this.total = total;
-	}
+  public Integer getPageSize() {
+    return pageSize;
+  }
+
+  public void setPageSize(Integer pageSize) {
+    this.pageSize = pageSize;
+  }
+
+  public Integer getTotal() {
+    return total;
+  }
+
+  public void setTotal(Integer total) {
+    this.total = total;
+  }
 }

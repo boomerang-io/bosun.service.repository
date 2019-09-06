@@ -1,0 +1,87 @@
+{
+	"_id": ObjectId("5cb0dfeec401f00001dbae55"),
+	"_class": "net.boomerangplatform.mongo.entity.CiComponentVersionEntity",
+	"ciComponentId": "5c93e5494b8d3c00019577ab",
+	"name": "master-0",
+	"active": true,
+	"ucdVersionId": "master-0",
+	"ucdVersionId": "56dc4f3c-197c-40da-8929-297246dec558",
+	"properties": [
+		{
+			"key": "docker.enable",
+			"value": "true"
+		},
+		{
+			"key": "git.author.name",
+			"value": "twlawrie"
+		},
+		{
+			"key": "notifications.type",
+			"value": "slack"
+		},
+		{
+			"key": "git.pusher.name",
+			"value": "twlawrie"
+		},
+		{
+			"key": "team.name",
+			"value": "Dev Service team"
+		},
+		{
+			"key": "mode",
+			"value": "docker"
+		},
+		{
+			"key": "notifications.slack.dm",
+			"value": ""
+		},
+		{
+			"key": "git.ref",
+			"value": "refs/heads/master"
+		},
+		{
+			"key": "filter.target",
+			"value": "branch"
+		},
+		{
+			"key": "notifications.slack.channel",
+			"value": "#bmrg-cf-ci2"
+		},
+		{
+			"key": "git.pusher.email",
+			"value": "twlawrie@us.ibm.com"
+		},
+		{
+			"key": "git.commit.message",
+			"value": "Update README.md"
+		},
+		{
+			"key": "git.commit.id",
+			"value": "183d3054f654ac93491d6e4336540658f09e9c49"
+		},
+		{
+			"key": "docker.image.name",
+			"value": "tyson-hello-world"
+		},
+		{
+			"key": "git.author.email",
+			"value": "twlawrie@us.ibm.com"
+		},
+		{
+			"key": "name",
+			"value": "tyson-hello-world-docker"
+		},
+		{
+			"key": "build.tool.version",
+			"value": "3.5.1"
+		},
+		{
+			"key": "build.tool",
+			"value": "maven"
+		},
+		{
+			"key": "filter.expression",
+			"value": "^master$"
+		}
+	]
+}

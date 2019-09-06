@@ -1,40 +1,33 @@
 package net.boomerangplatform.model;
 
-import java.util.ArrayList;
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SonarQubeProjectVersions {
 
-	@JsonProperty("paging")
-	private Paging paging;
-	
-	@JsonProperty("analyses")
-	private List<Analysis> analyses;
-	
-	public SonarQubeProjectVersions() {
-		
-	}
+  private Paging paging;
 
-	public Paging getPaging() {
-		return paging;
-	}
+  private List<Analysis> analyses;
 
-	public void setPaging(Paging paging) {
-		this.paging = paging;
-	}
+  public SonarQubeProjectVersions() {
+    // Do nothing
+  }
 
-	public List<Analysis> getAnalyses() {
-		if (analyses == null) {
-			analyses = new ArrayList<Analysis>();
-		}
-		return analyses;
-	}
+  public Paging getPaging() {
+    return paging;
+  }
 
-	public void setAnalyses(List<Analysis> analyses) {
-		this.analyses = analyses;
-	}
+  public void setPaging(Paging paging) {
+    this.paging = paging;
+  }
+
+  public List<Analysis> getAnalyses() {
+    return sanityEmptyList(analyses);
+  }
+
+  public void setAnalyses(List<Analysis> analyses) {
+    this.analyses = sanityEmptyList(analyses);
+  }
 }
