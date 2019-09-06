@@ -1,52 +1,45 @@
 package net.boomerangplatform.model;
 
-import java.util.ArrayList;
+import static net.boomerangplatform.util.DateUtil.sanityNullDate;
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
 import java.util.Date;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Analysis {
 
-	@JsonProperty("key")
-	private String key;
-	
-	@JsonProperty("date")
-	private Date date;
-	
-	@JsonProperty("events")
-	private List<Event> events;
-	
-	public Analysis() {
-		
-	}
+  private String key;
 
-	public String getKey() {
-		return key;
-	}
+  private Date date;
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+  private List<Event> events;
 
-	public Date getDate() {
-		return date;
-	}
+  public Analysis() {
+    // Do nothing
+  }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+  public String getKey() {
+    return key;
+  }
 
-	public List<Event> getEvents() {
-		if (events == null) {
-			events = new ArrayList<Event>();
-		}
-		return events;
-	}
+  public void setKey(String key) {
+    this.key = key;
+  }
 
-	public void setEvents(List<Event> events) {
-		this.events = events;
-	}
+  public Date getDate() {
+    return sanityNullDate(date);
+  }
+
+  public void setDate(Date date) {
+    this.date = sanityNullDate(date);
+  }
+
+  public List<Event> getEvents() {
+    return sanityEmptyList(events);
+  }
+
+  public void setEvents(List<Event> events) {
+    this.events = sanityEmptyList(events);
+  }
 }

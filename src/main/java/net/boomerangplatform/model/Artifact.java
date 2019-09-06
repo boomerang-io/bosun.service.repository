@@ -1,54 +1,43 @@
 package net.boomerangplatform.model;
 
-import java.util.ArrayList;
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Artifact {
 
-	@JsonProperty("general")
-	private General general;
-	
-	@JsonProperty("issues")
-	private List<Issue> issues;
-	
-	@JsonProperty("licenses")
-	private List<License> licenses;
-	
-	public Artifact() {
-		
-	}
+  private General general;
 
-	public General getGeneral() {
-		return general;
-	}
+  private List<Issue> issues;
 
-	public void setGeneral(General general) {
-		this.general = general;
-	}
+  private List<License> licenses;
 
-	public List<Issue> getIssues() {
-		if (issues == null) {
-			issues = new ArrayList<Issue>();
-		}
-		return issues;
-	}
+  public Artifact() {
+    // Do nothing
+  }
 
-	public void setIssues(List<Issue> issues) {
-		this.issues = issues;
-	}
+  public General getGeneral() {
+    return general;
+  }
 
-	public List<License> getLicenses() {
-		if (licenses == null) {
-			licenses = new ArrayList<License>();
-		}		
-		return licenses;
-	}
+  public void setGeneral(General general) {
+    this.general = general;
+  }
 
-	public void setLicenses(List<License> licenses) {
-		this.licenses = licenses;
-	}
+  public List<Issue> getIssues() {
+    return sanityEmptyList(issues);
+  }
+
+  public void setIssues(List<Issue> issues) {
+    this.issues = sanityEmptyList(issues);
+  }
+
+  public List<License> getLicenses() {
+    return sanityEmptyList(licenses);
+  }
+
+  public void setLicenses(List<License> licenses) {
+    this.licenses = sanityEmptyList(licenses);
+  }
 }

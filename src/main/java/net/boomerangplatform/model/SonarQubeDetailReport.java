@@ -1,25 +1,22 @@
 package net.boomerangplatform.model;
 
+import static net.boomerangplatform.util.ListUtil.sanityNullList;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SonarQubeDetailReport {
 
-  @JsonProperty("paging")
-  private Paging Paging;
-  
-  @JsonProperty("baseComponent")
+  private Paging paging;
+
   private BaseComponent baseComponent;
-  
-  @JsonProperty("components")
+
   private List<SonarComponent> components;
 
   public Paging getPaging() {
-    return Paging;
+    return paging;
   }
 
   public void setPaging(Paging paging) {
-    Paging = paging;
+    this.paging = paging;
   }
 
   public BaseComponent getBaseComponent() {
@@ -31,11 +28,11 @@ public class SonarQubeDetailReport {
   }
 
   public List<SonarComponent> getComponents() {
-    return components;
+    return sanityNullList(components);
   }
 
   public void setComponents(List<SonarComponent> components) {
-    this.components = components;
+    this.components = sanityNullList(components);
   }
 
 }

@@ -1,0 +1,27 @@
+{
+    "_id" : ObjectId("5c93e5494b8d3c00019577ab"),
+    "_class" : "net.boomerangplatform.mongo.entity.CiComponentEntity",
+    "name" : "Marcus-Test",
+    "ciTeamId" : "5cae2fc4db258100018a87b9",
+    "repoUrl" : "https://github.ibm.com/Boomerang/MarcusBuild",
+    "repoId" : "533455",
+    "repoOwner" : "Boomerang", 
+    "repoName" : "MarcusBuild",
+    "repoSshUrl" : "ssh://",
+    "ucdComponentId" : "169a1b73-01e3-e83d-a8b3-d7145aa66caf",
+    "audits" : [ 
+        {
+            "date" : ISODate("2019-03-21T19:25:55.957Z"),
+            "note" : "Component created"
+        }
+    ],
+    "componentModeId" : "5a95c571d5c55474db67ae2d",
+    "scmProviderId" : "5c536f5c352b1b5141084bae",
+    "config" : {
+        "filters" : {
+            "target" : "branch",
+            "expression" : "^develop$"
+        }
+    },
+    "isActive" : true
+}

@@ -1,56 +1,51 @@
 package net.boomerangplatform.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TextRange {
 
-	@JsonProperty("startLine")
-	private Integer startLine;
-	
-	@JsonProperty("endLine")
-	private Integer endLine;
-	
-	@JsonProperty("startOffset")
-	private Integer startOffset;
-	
-	@JsonProperty("endOffset")
-	private Integer endOffset;
-	
-	public TextRange() {
-		
-	}
+  private Integer startLine;
 
-	public Integer getStartLine() {
-		return startLine;
-	}
+  private Integer endLine;
 
-	public void setStartLine(Integer startLine) {
-		this.startLine = startLine;
-	}
+  private Integer startOffset;
 
-	public Integer getEndLine() {
-		return endLine;
-	}
+  private Integer endOffset;
 
-	public void setEndLine(Integer endLine) {
-		this.endLine = endLine;
-	}
+  public TextRange() {
+    // Do nothing
+  }
 
-	public Integer getStartOffset() {
-		return startOffset;
-	}
+  public Integer getStartLine() {
+    return startLine;
+  }
 
-	public void setStartOffset(Integer startOffset) {
-		this.startOffset = startOffset;
-	}
+  public void setStartLine(Integer startLine) {
+    this.startLine = startLine;
+  }
 
-	public Integer getEndOffset() {
-		return endOffset;
-	}
+  public Integer getEndLine() {
+    return endLine;
+  }
 
-	public void setEndOffset(Integer endOffset) {
-		this.endOffset = endOffset;
-	}
+  public void setEndLine(Integer endLine) {
+    this.endLine = endLine;
+  }
+
+  public Integer getStartOffset() {
+    return startOffset;
+  }
+
+  public void setStartOffset(Integer startOffset) {
+    this.startOffset = startOffset;
+  }
+
+  public Integer getEndOffset() {
+    return endOffset;
+  }
+
+  public void setEndOffset(Integer endOffset) {
+    this.endOffset = endOffset;
+  }
 }

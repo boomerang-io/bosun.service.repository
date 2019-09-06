@@ -1,29 +1,23 @@
 package net.boomerangplatform.model;
 
-import java.util.ArrayList;
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ArtifactSummary {
 
-	@JsonProperty("artifacts")
-	private List<Artifact> artifacts;
-	
-	public ArtifactSummary() {
-		
-	}
+  private List<Artifact> artifacts;
 
-	public List<Artifact> getArtifacts() {
-		if (artifacts == null) {
-			artifacts = new ArrayList<Artifact>();
-		}
-		return artifacts;
-	}
+  public ArtifactSummary() {
+    // DO nothing
+  }
 
-	public void setArtifacts(List<Artifact> artifacts) {
-		this.artifacts = artifacts;
-	}
+  public List<Artifact> getArtifacts() {
+    return sanityEmptyList(artifacts);
+  }
+
+  public void setArtifacts(List<Artifact> artifacts) {
+    this.artifacts = sanityEmptyList(artifacts);
+  }
 }

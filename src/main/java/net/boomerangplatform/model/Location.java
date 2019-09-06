@@ -1,45 +1,41 @@
 package net.boomerangplatform.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Location {
 
-	@JsonProperty("component")
-	private String component;
-	
-	@JsonProperty("textRange")
-	private TextRange textRange;
-	
-	@JsonProperty("msg")
-	private String msg;
-	
-	public Location() {
-		
-	}
+  private String component;
 
-	public String getComponent() {
-		return component;
-	}
+  private TextRange textRange;
 
-	public void setComponent(String component) {
-		this.component = component;
-	}
+  private String msg;
 
-	public TextRange getTextRange() {
-		return textRange;
-	}
+  public Location() {
+    // Do nothing
+  }
 
-	public void setTextRange(TextRange textRange) {
-		this.textRange = textRange;
-	}
+  public String getComponent() {
+    return component;
+  }
 
-	public String getMsg() {
-		return msg;
-	}
+  public void setComponent(String component) {
+    this.component = component;
+  }
 
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
+  public TextRange getTextRange() {
+    return textRange;
+  }
+
+  public void setTextRange(TextRange textRange) {
+    this.textRange = textRange;
+  }
+
+  public String getMsg() {
+    return msg;
+  }
+
+  public void setMsg(String msg) {
+    this.msg = msg;
+  }
 }

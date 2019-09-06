@@ -1,6 +1,6 @@
 package net.boomerangplatform.model;
 
-import java.util.ArrayList;
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
 import java.util.List;
 
 public class SonarComponent {
@@ -53,16 +53,11 @@ public class SonarComponent {
   }
 
   public List<Measure> getMeasures() {
-    if (measures == null) {
-      measures = new ArrayList<Measure>();
-    }
-    return measures;
+    return sanityEmptyList(measures);
   }
 
   public void setMeasures(List<Measure> measures) {
-    this.measures = measures;
+    this.measures = sanityEmptyList(measures);
   }
-
-
 
 }

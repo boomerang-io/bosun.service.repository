@@ -1,0 +1,35 @@
+{
+    "_id" : ObjectId("5cae2fc4db258100018a87b9"),
+    "_class" : "net.boomerangplatform.mongo.entity.CiTeamEntity",
+    "name" : "Marcus CI",
+    "higherLevelGroupId" : "5a5d2bb7d91eb90007f486ca",
+    "ucdApplicationId" : "16a086a7-f325-329e-9f51-482a9d556ba4",
+    "isActive" : true,
+    "audits" : [ 
+        {
+            "date" : ISODate("2019-04-10T18:02:42.316Z"),
+            "note" : "Team created"
+        }
+    ],
+  
+    	   "settings" : {
+        "properties" : [ 
+            {
+                "_id" : "b1cdfb12-cbe7-4d9f-a5cc-2a0e0ca7b195",
+                "value" : "name!",
+                "description" : "NAme",
+                "key" : "name.name",
+                "label" : "Name",
+                "type" : "password"
+            }, 
+            {
+                "_id" : "df5f5749-4d30-41c3-803e-56b54b768407",
+                "value" : "asdf",
+                "description" : "asdf",
+                "key" : "asdf",
+                "label" : "asdf",
+                "type" : "password"
+            }
+        ]
+    }
+}

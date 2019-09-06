@@ -1,93 +1,84 @@
 package net.boomerangplatform.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IssueComponent {
 
-	@JsonProperty("organization")
-	private String organization;
-	@JsonProperty("key")
-	private String key;
-	@JsonProperty("uuid")
-	private String uuid;
-	@JsonProperty("enabled")
-	private Boolean enabled;
-	@JsonProperty("qualifier")
-	private String qualifier;
-	@JsonProperty("name")
-	private String name;
-	@JsonProperty("longName")
-	private String longName;
-	@JsonProperty("path")
-	private String path;
-	
-	public IssueComponent() {
-		
-	}
+  private String organization;
+  private String key;
+  private String uuid;
+  private Boolean enabled;
+  private String qualifier;
+  private String name;
+  private String longName;
+  private String path;
 
-	public String getOrganization() {
-		return organization;
-	}
+  public IssueComponent() {
+    // Do nothing
+  }
 
-	public void setOrganization(String organization) {
-		this.organization = organization;
-	}
+  public String getOrganization() {
+    return organization;
+  }
 
-	public String getKey() {
-		return key;
-	}
+  public void setOrganization(String organization) {
+    this.organization = organization;
+  }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+  public String getKey() {
+    return key;
+  }
 
-	public String getUuid() {
-		return uuid;
-	}
+  public void setKey(String key) {
+    this.key = key;
+  }
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+  public String getUuid() {
+    return uuid;
+  }
 
-	public Boolean getEnabled() {
-		return enabled;
-	}
+  public void setUuid(String uuid) {
+    this.uuid = uuid;
+  }
 
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
+  public Boolean getEnabled() {
+    return enabled;
+  }
 
-	public String getQualifier() {
-		return qualifier;
-	}
+  public void setEnabled(Boolean enabled) {
+    this.enabled = enabled;
+  }
 
-	public void setQualifier(String qualifier) {
-		this.qualifier = qualifier;
-	}
+  public String getQualifier() {
+    return qualifier;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public void setQualifier(String qualifier) {
+    this.qualifier = qualifier;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getLongName() {
-		return longName;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setLongName(String longName) {
-		this.longName = longName;
-	}
+  public String getLongName() {
+    return longName;
+  }
 
-	public String getPath() {
-		return path;
-	}
+  public void setLongName(String longName) {
+    this.longName = longName;
+  }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+  public String getPath() {
+    return path;
+  }
+
+  public void setPath(String path) {
+    this.path = path;
+  }
 }

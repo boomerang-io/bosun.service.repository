@@ -1,65 +1,56 @@
 package net.boomerangplatform.model;
 
-import java.util.ArrayList;
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Measure {
 
-	@JsonProperty("metric")
-	private String metric;
-	
-	@JsonProperty("value")
-	private String value;
-	
-	@JsonProperty("bestValue")
-	private Boolean bestValue;
-	
-	@JsonProperty("history")
-	private List<History> history;
-	
-	public Measure() {
-		
-	}
+  private String metric;
 
-	public String getMetric() {
-		return metric;
-	}
+  private String value;
 
-	public void setMetric(String metric) {
-		this.metric = metric;
-	}
+  private Boolean bestValue;
 
-	public String getValue() {
-		return value;
-	}
+  private List<History> history;
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+  public Measure() {
+    // Do nothing
+  }
 
-	public Boolean getBestValue() {
-		return bestValue;
-	}
+  public String getMetric() {
+    return metric;
+  }
 
-	public void setBestValue(Boolean bestValue) {
-		this.bestValue = bestValue;
-	}
+  public void setMetric(String metric) {
+    this.metric = metric;
+  }
 
-	public List<History> getHistory() {
-		if (history == null) {
-			history = new ArrayList<History>();
-		}
-		return history;
-	}
+  public String getValue() {
+    return value;
+  }
 
-	public void setHistory(List<History> history) {
-		this.history = history;
-	}
+  public void setValue(String value) {
+    this.value = value;
+  }
+
+  public Boolean getBestValue() {
+    return bestValue;
+  }
+
+  public void setBestValue(Boolean bestValue) {
+    this.bestValue = bestValue;
+  }
+
+  public List<History> getHistory() {
+    return sanityEmptyList(history);
+  }
+
+  public void setHistory(List<History> history) {
+    this.history = sanityEmptyList(history);
+  }
 }

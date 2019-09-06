@@ -1,25 +1,23 @@
 package net.boomerangplatform.model;
 
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Flow {
 
-	@JsonProperty("locations")
-	private List<Location> locations = null;
-	
-	public Flow() {
-		
-	}
+  private List<Location> locations;
 
-	public List<Location> getLocations() {
-		return locations;
-	}
+  public Flow() {
+    // DO nothing
+  }
 
-	public void setLocations(List<Location> locations) {
-		this.locations = locations;
-	}
+  public List<Location> getLocations() {
+    return sanityEmptyList(locations);
+  }
+
+  public void setLocations(List<Location> locations) {
+    this.locations = sanityEmptyList(locations);
+  }
 }

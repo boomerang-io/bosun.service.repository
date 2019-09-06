@@ -1,65 +1,56 @@
 package net.boomerangplatform.model;
 
-import java.util.ArrayList;
+import static net.boomerangplatform.util.ListUtil.sanityEmptyList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class License {
 
-	@JsonProperty("name")
-	private String name;
-	
-	@JsonProperty("full_name")
-	private String fullName;
-	
-	@JsonProperty("components")
-	private List<String> components;
-	
-	@JsonProperty("more_info_url")
-	private List<String> moreInfoUrl;
-	
-	public License() {
-		
-	}
+  private String name;
 
-	public String getName() {
-		return name;
-	}
+  @JsonProperty("full_name")
+  private String fullName;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  private List<String> components;
 
-	public String getFullName() {
-		return fullName;
-	}
+  @JsonProperty("more_info_url")
+  private List<String> moreInfoUrl;
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
+  public License() {
+    // Do nothing
+  }
 
-	public List<String> getComponents() {
-		if (components == null) {
-			components = new ArrayList<String>();
-		}
-		return components;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setComponents(List<String> components) {
-		this.components = components;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public List<String> getMoreInfoUrl() {
-		if (moreInfoUrl == null) {
-			moreInfoUrl = new ArrayList<String>();
-		}
-		return moreInfoUrl;
-	}
+  public String getFullName() {
+    return fullName;
+  }
 
-	public void setMoreInfoUrl(List<String> moreInfoUrl) {
-		this.moreInfoUrl = moreInfoUrl;
-	}
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
+  }
+
+  public List<String> getComponents() {
+    return sanityEmptyList(components);
+  }
+
+  public void setComponents(List<String> components) {
+    this.components = sanityEmptyList(components);
+  }
+
+  public List<String> getMoreInfoUrl() {
+    return sanityEmptyList(moreInfoUrl);
+  }
+
+  public void setMoreInfoUrl(List<String> moreInfoUrl) {
+    this.moreInfoUrl = sanityEmptyList(moreInfoUrl);
+  }
 }
