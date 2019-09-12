@@ -163,25 +163,31 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 
     Date date = getSonarQubeDateForVersion(componentEntity.getId(), version);
 
-    StringBuilder sb = new StringBuilder();
-    sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion)
-        .append(sonarqubeUrlApiMetricsTestCoverage);
+    if (date != null) {
 
-    String url = getUrl(sb.toString(), componentEntity.getId(), date);
+      StringBuilder sb = new StringBuilder();
+      sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion)
+          .append(sonarqubeUrlApiMetricsTestCoverage);
 
-    final HttpEntity<?> request = new HttpEntity<>(getHeaders());
+      String url = getUrl(sb.toString(), componentEntity.getId(), date);
 
-    final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse =
-        internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeMeasuresReport.class);
-    SonarQubeMeasuresReport sonarQubeMeasuresReport = sonarQubeMeasuresReportResponse.getBody();
+      final HttpEntity<?> request = new HttpEntity<>(getHeaders());
 
-    Measures measures = getMeasures(sonarQubeMeasuresReport.getMeasures());
+      final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse =
+          internalRestTemplate.exchange(url, HttpMethod.GET, request,
+              SonarQubeMeasuresReport.class);
+      SonarQubeMeasuresReport sonarQubeMeasuresReport = sonarQubeMeasuresReportResponse.getBody();
 
-    SonarQubeReport sonarQubeReport = new SonarQubeReport();
-    sonarQubeReport.setIssues(null);
-    sonarQubeReport.setMeasures(measures);
+      Measures measures = getMeasures(sonarQubeMeasuresReport.getMeasures());
 
-    return sonarQubeReport;
+      SonarQubeReport sonarQubeReport = new SonarQubeReport();
+      sonarQubeReport.setIssues(null);
+      sonarQubeReport.setMeasures(measures);
+
+      return sonarQubeReport;
+    } else {
+      return null;
+    }
   }
 
   @Override
