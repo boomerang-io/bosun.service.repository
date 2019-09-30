@@ -1,5 +1,6 @@
 package net.boomerangplatform.service;
 
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -162,7 +163,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
         componentEntity.getCiTeamId()));
 
     Date date = getSonarQubeDateForVersion(componentEntity.getId(), version);
-
+    SonarQubeReport sonarQubeReport = null;
     if (date != null) {
 
       StringBuilder sb = new StringBuilder();
@@ -180,14 +181,12 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 
       Measures measures = getMeasures(sonarQubeMeasuresReport.getMeasures());
 
-      SonarQubeReport sonarQubeReport = new SonarQubeReport();
+      sonarQubeReport = new SonarQubeReport();
       sonarQubeReport.setIssues(null);
       sonarQubeReport.setMeasures(measures);
-
-      return sonarQubeReport;
-    } else {
-      return null;
     }
+    
+    return sonarQubeReport;
   }
 
   @Override
@@ -394,7 +393,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 
   private String dateToString(Date date) {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-    return dateFormat.format(date);
+    return URLEncoder.encode(dateFormat.format(date), StandardCharsets.UTF_8);
   }
 
   private Date addSecond(Date date) {
