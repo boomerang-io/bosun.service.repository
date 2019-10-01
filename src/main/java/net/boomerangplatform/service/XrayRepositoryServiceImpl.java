@@ -32,6 +32,7 @@ import net.boomerangplatform.mongo.model.CoreProperty;
 import net.boomerangplatform.mongo.service.CiComponentService;
 import net.boomerangplatform.mongo.service.CiComponentVersionService;
 import net.boomerangplatform.mongo.service.CiTeamService;
+import net.boomerangplatform.mongo.service.SettingsService;
 
 @Service
 public class XrayRepositoryServiceImpl implements XrayRepositoryService {
@@ -40,20 +41,12 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 
   private static final Pattern ORG_PATTERN = Pattern.compile("\\s+");
 
-  @Value("${xray.url.api.base}")
-  private String xrayBase;
 
   @Value("${xray.url.api.dependencygraph}")
   private String xrayDependencyGraph;
 
   @Value("${xray.url.api.artifactsummary}")
   private String xrayArtifactSummary;
-
-  @Value("${xray.boomerang.user}")
-  private String xrayBoomerangUser;
-
-  @Value("${xray.boomerang.apitoken}")
-  private String xrayBoomerangApitoken;
 
   @Value("${xray.boomerang.artifactory.id}")
   private String boomerangArtifactoryId;
@@ -79,6 +72,9 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 
   @Autowired
   private CiComponentVersionService versionService;
+  
+  @Autowired
+  private SettingsService settingsService;
 
   @Override
   public DependencyGraph getArtifactDependencygraph(String ciComponentId, String version) {
@@ -124,7 +120,7 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
         final HttpEntity<?> request = new HttpEntity<>(path, getHeaders());
 
         StringBuilder sb = new StringBuilder();
-        sb.append(xrayBase).append(xrayDependencyGraph);
+        sb.append(this.settingsService.getConfiguration("cicd", "xray.url.api.base").getValue()).append(xrayDependencyGraph);
 
         String url = sb.toString();
 
@@ -189,7 +185,7 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
         final HttpEntity<?> request = new HttpEntity<>(paths, getHeaders());
 
         StringBuilder sb = new StringBuilder();
-        sb.append(xrayBase).append(xrayArtifactSummary);
+        sb.append(this.settingsService.getConfiguration("cicd", "xray.url.api.base").getValue()).append(xrayArtifactSummary);
 
         String url = sb.toString();
 
@@ -277,7 +273,7 @@ public class XrayRepositoryServiceImpl implements XrayRepositoryService {
 
 
   private HttpHeaders getHeaders() {
-    final String plainCreds = xrayBoomerangUser + ":" + xrayBoomerangApitoken;
+    final String plainCreds = this.settingsService.getConfiguration("cicd", "xray.boomerang.user").getValue() + ":" + this.settingsService.getConfiguration("cicd", "xray.boomerang.apitoken").getValue();
     final byte[] plainCredsBytes = plainCreds.getBytes(StandardCharsets.UTF_8);
     final byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
     final String base64Creds = new String(base64CredsBytes, StandardCharsets.UTF_8);
