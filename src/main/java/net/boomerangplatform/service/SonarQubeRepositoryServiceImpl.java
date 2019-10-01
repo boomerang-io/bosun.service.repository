@@ -36,6 +36,7 @@ import net.boomerangplatform.mongo.entity.CiComponentEntity;
 import net.boomerangplatform.mongo.entity.CiComponentVersionEntity;
 import net.boomerangplatform.mongo.service.CiComponentService;
 import net.boomerangplatform.mongo.service.CiComponentVersionService;
+import net.boomerangplatform.mongo.service.SettingsService;
 import net.boomerangplatform.util.DateUtil;
 
 @Service
@@ -46,9 +47,6 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
   private static final Logger LOGGER = LogManager.getLogger();
 
   private static final String LOG_INFO = "ciComponentName=%s, ciComponentVersionId=%s, ciTeamId=%s";
-
-  @Value("${sonarqube.url.api.base}")
-  private String sonarqubeUrlApiBase;
 
   @Value("${sonarqube.url.api.metrics.violations}")
   private String sonarqubeUrlApiMetricsViolations;
@@ -71,8 +69,6 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
   @Value("${sonarqube.url.api.measures.latest}")
   private String sonarqubeUrlApiMeasuresLatest;
 
-  @Value("${sonarqube.boomerang.apitoken}")
-  private String sonarqubeBoomerangApitoken;
 
   @Value("${sonarqube.url.api.measures.componenttree}")
   private String sonarqubeUrlApiMeasuresComponentTree;
@@ -86,6 +82,9 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 
   @Autowired
   private CiComponentVersionService versionService;
+  
+  @Autowired
+  private SettingsService settingsService;
 
 
   @Override
@@ -109,7 +108,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
         if (date != null) {
 
           StringBuilder sb = new StringBuilder();
-          sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion)
+          sb.append(this.settingsService.getConfiguration("cicd", "sonarqube.url.api.base").getValue()).append(sonarqubeUrlApiMeasuresVersion)
               .append(sonarqubeUrlApiMetricsViolations);
 
           String url = getUrl(sb.toString(), componentEntity.getId(), date);
@@ -166,7 +165,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
     if (date != null) {
 
       StringBuilder sb = new StringBuilder();
-      sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresVersion)
+      sb.append(this.settingsService.getConfiguration("cicd", "sonarqube.url.api.base").getValue()).append(sonarqubeUrlApiMeasuresVersion)
           .append(sonarqubeUrlApiMetricsTestCoverage);
 
       String url = getUrl(sb.toString(), componentEntity.getId(), date);
@@ -210,7 +209,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
         componentEntity.getCiTeamId()));
 
     StringBuilder sb = new StringBuilder();
-    sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiMeasuresComponentTree)
+    sb.append(this.settingsService.getConfiguration("cicd", "sonarqube.url.api.base").getValue()).append(sonarqubeUrlApiMeasuresComponentTree)
         .append(sonarqubeUrlApiMetricsTestCoverage);
 
     String url = sb.toString().replace(COMPONENT, componentEntity.getUcdComponentId());
@@ -224,7 +223,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
   }
 
   private HttpHeaders getHeaders() {
-    final String plainCreds = sonarqubeBoomerangApitoken + ":";
+    final String plainCreds = this.settingsService.getConfiguration("cicd", "sonarqube.boomerang.apitoken").getValue() + ":";
     final byte[] plainCredsBytes = plainCreds.getBytes(StandardCharsets.UTF_8);
     final byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
     final String base64Creds = new String(base64CredsBytes, StandardCharsets.UTF_8);
@@ -238,7 +237,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 
   private String getSonarQubeReportUrl(CiComponentEntity componentEntity, Date date) {
     StringBuilder sb = new StringBuilder();
-    sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiIssuesVersion);
+    sb.append(this.settingsService.getConfiguration("cicd", "sonarqube.url.api.base").getValue()).append(sonarqubeUrlApiIssuesVersion);
 
     return sb.toString().replace("{componentKeys}", componentEntity.getId())
         .replace("{createdBefore}", dateToString(addSecond(date)));
@@ -254,7 +253,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
     final HttpEntity<?> request = new HttpEntity<>(getHeaders());
 
     StringBuilder sb = new StringBuilder();
-    sb.append(sonarqubeUrlApiBase).append(sonarqubeUrlApiProjectVersions);
+    sb.append(this.settingsService.getConfiguration("cicd", "sonarqube.url.api.base").getValue()).append(sonarqubeUrlApiProjectVersions);
 
     String url = sb.toString().replace("{project}", project);
 
