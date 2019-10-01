@@ -64,6 +64,41 @@
             "label" : "Spring Datasource Password",
             "type" : "secured",
             "value" : "Ms6KNrPj!"
+        }, 
+        {
+            "description" : "xray.url.api.base",
+            "key" : "xray.url.api.base",
+            "label" : "Xray URL API Base",
+            "type" : "text",
+            "value" : "https://tools.boomerangplatform.net"
+        }, 
+        {
+            "description" : "xray.boomerang.apitoken",
+            "key" : "xray.boomerang.apitoken",
+            "label" : "Xray Boomerang Token",
+            "type" : "secured",
+            "value" : "AKCp5cckSQ2qbP9m3Uq8ZdkXXnyQzQgx4iG33TkHnpTxYs7tUZUP8ciWW7Ezf3t1VR6mmxM3H"
+        }, 
+        {
+            "description" : "xray.boomerang.user",
+            "key" : "xray.boomerang.user",
+            "label" : "Xray Boomerang User",
+            "type" : "text",
+            "value" : "boomerangxray"
+        }, 
+        {
+            "description" : "sonarqube.boomerang.apitoken",
+            "key" : "sonarqube.boomerang.apitoken",
+            "label" : "Sonarqube Boomerang API Token",
+            "type" : "secured",
+            "value" : "b27bfc05d6c19eda55bc15bdf66e46875858fa34"
+        }, 
+        {
+            "description" : "sonarqube.url.api.base",
+            "key" : "sonarqube.url.api.base",
+            "label" : "Sonarqube URL API Base",
+            "type" : "text",
+            "value" : "https://tools.boomerangplatform.net/sonarqube"
         }
     ],
     "description" : "Configure continuous integration and conditions delivery options for Boomerang Platform.",

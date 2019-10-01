@@ -54,7 +54,7 @@ public class SonarQubeRepositoryServiceTest extends AbstractBoomerangTest {
 
   @Override
   protected String[] getCollections() {
-    return new String[] {"ci_components", "ci_components_versions"};
+    return new String[] {"ci_components", "ci_components_versions", "core_settings"};
   }
 
   @Override
@@ -63,6 +63,7 @@ public class SonarQubeRepositoryServiceTest extends AbstractBoomerangTest {
     data.put("ci_components", Arrays.asList("db/ci_components/ci_component.json"));
     data.put("ci_components_versions", Arrays.asList("db/ci_components_versions/version1.json",
         "db/ci_components_versions/version2.json"));
+    data.put("core_settings", Arrays.asList("db/core_settings/cicd.json"));
 
     return data;
   }
