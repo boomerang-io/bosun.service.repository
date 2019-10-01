@@ -1,6 +1,5 @@
 package net.boomerangplatform.service;
 
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -9,7 +8,6 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,7 +184,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
       sonarQubeReport.setIssues(null);
       sonarQubeReport.setMeasures(measures);
     }
-    
+
     return sonarQubeReport;
   }
 
@@ -394,9 +392,9 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 
   private String dateToString(Date date) {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-    return StringUtils.replace(dateFormat.format(date), "+", "%2B");
+    return dateFormat.format(date);
   }
-  
+
 
   private Date addSecond(Date date) {
     LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
