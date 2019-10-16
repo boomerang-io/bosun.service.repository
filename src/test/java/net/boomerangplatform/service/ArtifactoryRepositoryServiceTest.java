@@ -36,7 +36,7 @@ import net.boomerangplatform.model.VersionArtifact;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Application.class, MongoConfig.class})
 @SpringBootTest
-public class ArtifactoryRepositoryServiceIntegrationTest extends AbstractBoomerangTest {
+public class ArtifactoryRepositoryServiceTest extends AbstractBoomerangTest {
 
   protected MockRestServiceServer mockServer;
 
