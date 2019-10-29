@@ -6,12 +6,11 @@ import net.boomerangplatform.model.VersionArtifact;
 
 public interface ArtifactoryRepositoryService {
 
-  byte[] getArtifactBytes(String ciTeamName, String ciComponentName, String version,
-      String artifact);
+	byte[] getArtifactBytes(String ciTeamName, String ciComponentName, String version, String artifact);
 
-  List<VersionArtifact> getArtifactList(String ciTeamName, String ciComponentName, String version);
+	List<VersionArtifact> getArtifactList(String ciTeamName, String ciComponentName, String version);
 
-  String getArtifactVersionCreatedDate(String ciTeamName, String ciComponentName, String version);
+	String getArtifactVersionCreatedDate(String ciTeamName, String ciComponentName, String version);
 
-  void uploadFile(MultipartFile file, String fileName, String folderPath);
+	void uploadFile(MultipartFile file, String fileName, String folderPath);
 }

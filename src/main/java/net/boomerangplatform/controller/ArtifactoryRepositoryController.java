@@ -15,38 +15,38 @@ import net.boomerangplatform.service.ArtifactoryRepositoryService;
 @RestController
 public class ArtifactoryRepositoryController {
 
-  @Autowired
-  private ArtifactoryRepositoryService repositoryService;
+	@Autowired
+	private ArtifactoryRepositoryService repositoryService;
 
-  @GetMapping("/artifact")
-  public byte[] getArtifactBytes(HttpServletResponse response,
-      @RequestParam(value = "ciTeamName", required = true) String ciTeamName,
-      @RequestParam(value = "ciComponentName", required = true) String ciComponentName,
-      @RequestParam(value = "version", required = true) String version,
-      @RequestParam(value = "artifact", required = true) String artifact) {
-    return repositoryService.getArtifactBytes(ciTeamName, ciComponentName, version, artifact);
-  }
+	@GetMapping("/artifact")
+	public byte[] getArtifactBytes(HttpServletResponse response,
+			@RequestParam(value = "ciTeamName", required = true) String ciTeamName,
+			@RequestParam(value = "ciComponentName", required = true) String ciComponentName,
+			@RequestParam(value = "version", required = true) String version,
+			@RequestParam(value = "artifact", required = true) String artifact) {
+		return repositoryService.getArtifactBytes(ciTeamName, ciComponentName, version, artifact);
+	}
 
-  @GetMapping("/artifact/list")
-  public List<VersionArtifact> getArtifactList(HttpServletResponse response,
-      @RequestParam(value = "ciTeamName", required = true) String ciTeamName,
-      @RequestParam(value = "ciComponentName", required = true) String ciComponentName,
-      @RequestParam(value = "version", required = true) String version) {
-    return repositoryService.getArtifactList(ciTeamName, ciComponentName, version);
-  }
+	@GetMapping("/artifact/list")
+	public List<VersionArtifact> getArtifactList(HttpServletResponse response,
+			@RequestParam(value = "ciTeamName", required = true) String ciTeamName,
+			@RequestParam(value = "ciComponentName", required = true) String ciComponentName,
+			@RequestParam(value = "version", required = true) String version) {
+		return repositoryService.getArtifactList(ciTeamName, ciComponentName, version);
+	}
 
-  @GetMapping("/artifact/version/created")
-  public String getArtifactVersionCreatedDate(HttpServletResponse response,
-      @RequestParam(value = "ciTeamName", required = true) String ciTeamName,
-      @RequestParam(value = "ciComponentName", required = true) String ciComponentName,
-      @RequestParam(value = "version", required = true) String version) {
-    return repositoryService.getArtifactVersionCreatedDate(ciTeamName, ciComponentName, version);
-  }
+	@GetMapping("/artifact/version/created")
+	public String getArtifactVersionCreatedDate(HttpServletResponse response,
+			@RequestParam(value = "ciTeamName", required = true) String ciTeamName,
+			@RequestParam(value = "ciComponentName", required = true) String ciComponentName,
+			@RequestParam(value = "version", required = true) String version) {
+		return repositoryService.getArtifactVersionCreatedDate(ciTeamName, ciComponentName, version);
+	}
 
-  @GetMapping("")
-  public void uploadFile(@RequestParam(value = "file", required = true) MultipartFile file,
-      @RequestParam(value = "fileName", required = true) String fileName,
-      @RequestParam(value = "folderPath", required = true) String folderPath) {
-    repositoryService.uploadFile(file, fileName, folderPath);
-  }
+	@GetMapping("")
+	public void uploadFile(@RequestParam(value = "file", required = true) MultipartFile file,
+			@RequestParam(value = "fileName", required = true) String fileName,
+			@RequestParam(value = "folderPath", required = true) String folderPath) {
+		repositoryService.uploadFile(file, fileName, folderPath);
+	}
 }

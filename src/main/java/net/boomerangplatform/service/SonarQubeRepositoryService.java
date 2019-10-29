@@ -5,9 +5,9 @@ import net.boomerangplatform.model.SonarQubeReport;
 
 public interface SonarQubeRepositoryService {
 
-  SonarQubeReport getReport(String ciComponentId, String version);
+	SonarQubeReport getReport(String id, String version);
 
-  SonarQubeReport getTestCoverageReport(String ciComponentId, String version);
+	SonarQubeReport getTestCoverageReport(String id, String version);
 
-  SonarQubeDetailReport getDetailTestCoverageReport(String ciComponentId, String version);
+	SonarQubeDetailReport getDetailTestCoverageReport(String id, String version);
 }

@@ -13,27 +13,24 @@ import net.boomerangplatform.service.SonarQubeRepositoryService;
 @RestController
 public class SonarQubeRepositoryController {
 
-  @Autowired
-  private SonarQubeRepositoryService repositoryService;
+	@Autowired
+	private SonarQubeRepositoryService repositoryService;
 
-  @GetMapping("/report")
-  public SonarQubeReport getReport(
-      @RequestParam(value = "ciComponentId", required = true) String ciComponentId,
-      @RequestParam(value = "version", required = true) String version) {
-    return repositoryService.getReport(ciComponentId, version);
-  }
+	@GetMapping("/report")
+	public SonarQubeReport getReport(@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "version", required = true) String version) {
+		return repositoryService.getReport(id, version);
+	}
 
-  @GetMapping("/report/testcoverage")
-  public SonarQubeReport getTestCoverageReport(
-      @RequestParam(value = "ciComponentId", required = true) String ciComponentId,
-      @RequestParam(value = "version", required = true) String version) {
-    return repositoryService.getTestCoverageReport(ciComponentId, version);
-  }
+	@GetMapping("/report/testcoverage")
+	public SonarQubeReport getTestCoverageReport(@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "version", required = true) String version) {
+		return repositoryService.getTestCoverageReport(id, version);
+	}
 
-  @GetMapping("/report/detail/testcoverage")
-  public SonarQubeDetailReport getDetailTestCoverageReport(
-      @RequestParam(value = "ciComponentId", required = true) String ciComponentId,
-      @RequestParam(value = "version", required = true) String version) {
-    return repositoryService.getDetailTestCoverageReport(ciComponentId, version);
-  }
+	@GetMapping("/report/detail/testcoverage")
+	public SonarQubeDetailReport getDetailTestCoverageReport(@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "version", required = true) String version) {
+		return repositoryService.getDetailTestCoverageReport(id, version);
+	}
 }

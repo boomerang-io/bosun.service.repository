@@ -5,7 +5,7 @@ import net.boomerangplatform.model.DependencyGraph;
 
 public interface XrayRepositoryService {
 
-  DependencyGraph getArtifactDependencygraph(String ciComponentId, String version);
+	DependencyGraph getArtifactDependencygraph(String artifactPath, String artifactName, String artifactVersion);
 
-  ArtifactSummary getArtifactSummary(String ciComponentId, String version);
+	ArtifactSummary getArtifactSummary(String artifactPath, String artifactName, String artifactVersion);
 }

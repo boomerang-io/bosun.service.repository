@@ -13,20 +13,22 @@ import net.boomerangplatform.service.XrayRepositoryService;
 @RestController
 public class XrayRepositoryController {
 
-  @Autowired
-  private XrayRepositoryService repositoryService;
+	@Autowired
+	private XrayRepositoryService repositoryService;
 
-  @GetMapping("/artifact/dependencygraph")
-  public DependencyGraph getArtifactDependencygraph(
-      @RequestParam(value = "ciComponentId", required = true) String ciComponentId,
-      @RequestParam(value = "version", required = true) String version) {
-    return repositoryService.getArtifactDependencygraph(ciComponentId, version);
-  }
+	@GetMapping("/artifact/dependencygraph")
+	public DependencyGraph getArtifactDependencygraph(
+			@RequestParam(value = "artifactPath", required = true) String artifactPath,
+			@RequestParam(value = "artifactName", required = true) String artifactName,
+			@RequestParam(value = "artifactVersion", required = true) String artifactVersion) {
+		return repositoryService.getArtifactDependencygraph(artifactPath, artifactName, artifactVersion);
+	}
 
-  @GetMapping("/artifact/summary")
-  public ArtifactSummary getArtifactSummary(
-      @RequestParam(value = "ciComponentId", required = true) String ciComponentId,
-      @RequestParam(value = "version", required = true) String version) {
-    return repositoryService.getArtifactSummary(ciComponentId, version);
-  }
+	@GetMapping("/artifact/summary")
+	public ArtifactSummary getArtifactSummary(
+			@RequestParam(value = "artifactPath", required = true) String artifactPath,
+			@RequestParam(value = "artifactName", required = true) String artifactName,
+			@RequestParam(value = "artifactVersion", required = true) String artifactVersion) {
+		return repositoryService.getArtifactSummary(artifactPath, artifactName, artifactVersion);
+	}
 }
