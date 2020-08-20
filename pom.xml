@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -7,14 +9,14 @@
 		<version>2.1.8.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	
+
 	<groupId>net.boomerangplatform</groupId>
 	<artifactId>service-repository</artifactId>
 	<version>${version.name}</version>
 	<packaging>jar</packaging>
 	<name>service-repository</name>
 	<description>Service for Template</description>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>11</java.version>
@@ -23,8 +25,9 @@
 		<jacoco.out.path>${project.build.directory}</jacoco.out.path>
 		<sonar.jacoco.reportPaths>${jacoco.out.path}/jacoco.exec</sonar.jacoco.reportPaths>
 		<jacoco.version>0.8.2</jacoco.version>
+		<spring.data>2.1.9.RELEASE</spring.data>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -90,7 +93,7 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
@@ -100,72 +103,59 @@
 					<groupId>com.google.guava</groupId>
 					<artifactId>guava</artifactId>
 				</exclusion>
-			</exclusions>	
+			</exclusions>
 		</dependency>
 		<dependency>
-		    <groupId>com.google.guava</groupId>
-		    <artifactId>guava</artifactId>
-		    <version>28.0-jre</version>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>28.0-jre</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+			<version>${spring.data}</version>
+			<scope>provided</scope>
 		</dependency>
 
-<!-- START BOOMERANG LIBS -->		
-<!-- 	<dependency>
-			<groupId>net.boomerangplatform</groupId>
-			<artifactId>lib-security</artifactId>
-			<version>1.0.3</version>
-		</dependency>-->		
+		<!-- START BOOMERANG LIBS -->
+		<!-- <dependency> <groupId>net.boomerangplatform</groupId> <artifactId>lib-security</artifactId> 
+			<version>1.0.3</version> </dependency> -->
 		<dependency>
 			<groupId>net.boomerangplatform</groupId>
 			<artifactId>lib-rest</artifactId>
 			<version>1.0.1</version>
-	 	</dependency>
-<!--    <dependency>
-			<groupId>net.boomerangplatform</groupId>
-			<artifactId>lib-mongo-cicd</artifactId>
-			<version>0.0.1</version>
-		</dependency>-->		
-<!-- 	<dependency>
-			<groupId>net.boomerangplatform</groupId>
-			<artifactId>lib-mongo</artifactId>
-			<version>4.0.26</version>
-		</dependency>-->		
+		</dependency>
+		<!-- <dependency> <groupId>net.boomerangplatform</groupId> <artifactId>lib-mongo-cicd</artifactId> 
+			<version>0.0.1</version> </dependency> -->
+		<!-- <dependency> <groupId>net.boomerangplatform</groupId> <artifactId>lib-mongo</artifactId> 
+			<version>4.0.26</version> </dependency> -->
 		<dependency>
 			<groupId>net.boomerangplatform</groupId>
 			<artifactId>lib-util</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-<!-- 	<dependency>
-			<groupId>net.boomerangplatform</groupId>
-			<artifactId>lib-audit</artifactId>
-			<version>1.0.0</version>
-		</dependency> -->
-<!-- 	<dependency>
-			<groupId>net.boomerangplatform</groupId>
-			<artifactId>lib-opentracing</artifactId>
-			<version>1.0.3</version>
-		</dependency> -->		
-<!-- 	<dependency>
-			<groupId>net.boomerangplatform</groupId>
-			<artifactId>lib-testing</artifactId>
-			<version>1.0.2</version>
-			<scope>test</scope>
-		</dependency>-->
-<!-- END BOOMERANG LIBS -->		
-				
+		<!-- <dependency> <groupId>net.boomerangplatform</groupId> <artifactId>lib-audit</artifactId> 
+			<version>1.0.0</version> </dependency> -->
+		<!-- <dependency> <groupId>net.boomerangplatform</groupId> <artifactId>lib-opentracing</artifactId> 
+			<version>1.0.3</version> </dependency> -->
+		<!-- <dependency> <groupId>net.boomerangplatform</groupId> <artifactId>lib-testing</artifactId> 
+			<version>1.0.2</version> <scope>test</scope> </dependency> -->
+		<!-- END BOOMERANG LIBS -->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>boomeranglib-maven</id>
 			<url>https://tools.boomerangplatform.net/artifactory/boomeranglib-maven</url>
 		</repository>
 	</repositories>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -197,14 +187,14 @@
 				<version>${jacoco.version}</version>
 				<executions>
 					<execution>
-						 <id>pre-unit-test</id>
+						<id>pre-unit-test</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
 						<configuration>
-						    <destFile>${sonar.jacoco.reportPaths}</destFile>
-			                <propertyName>surefireArgLine</propertyName>
-			              </configuration>
+							<destFile>${sonar.jacoco.reportPaths}</destFile>
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
 					</execution>
 					<execution>
 						<id>jacoco-report</id>
