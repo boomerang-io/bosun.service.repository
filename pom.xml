@@ -23,7 +23,7 @@
 		<jacoco.out.path>${project.build.directory}</jacoco.out.path>
 		<sonar.jacoco.reportPaths>${jacoco.out.path}/jacoco.exec</sonar.jacoco.reportPaths>
 		<jacoco.version>0.8.2</jacoco.version>
-		<spring.data>2.1.9.RELEASE</spring.data>
+		<spring.data>2.6.3</spring.data>
 	</properties>
 
 	<dependencies>
