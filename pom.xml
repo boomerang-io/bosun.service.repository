@@ -106,8 +106,8 @@
 		</dependency>-->
 		<dependency>
 			<groupId>net.boomerangplatform</groupId>
-			<artifactId>lib-rest</artifactId>
-			<version>1.0.1</version>
+			<artifactId>lib-proxy</artifactId>
+			<version>1.2.0</version>
 		</dependency>
 		<!--    <dependency>
 			<groupId>net.boomerangplatform</groupId>
@@ -122,7 +122,7 @@
 		<dependency>
 			<groupId>net.boomerangplatform</groupId>
 			<artifactId>lib-util</artifactId>
-			<version>1.0.0</version>
+			<version>1.2.4</version>
 		</dependency>
 		<!-- 	<dependency>
 			<groupId>net.boomerangplatform</groupId>
