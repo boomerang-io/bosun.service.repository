@@ -6,20 +6,26 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+import io.swagger.v3.oas.models.OpenAPI;
 
 @SpringBootApplication
 public class Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
 
-	@Bean
-	@Qualifier("requestFactoryRestTemplate")
-	public RestTemplate requestFactoryRestTemplate() {
-		final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-		requestFactory.setBufferRequestBody(false);
-		return new RestTemplate(requestFactory);
-	}
+  @Bean
+  @Qualifier("requestFactoryRestTemplate")
+  public RestTemplate requestFactoryRestTemplate() {
+    final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+    requestFactory.setBufferRequestBody(false);
+    return new RestTemplate(requestFactory);
+  }
+
+  @Bean
+  public OpenAPI api() {
+    return new OpenAPI();
+  }
 
 }
