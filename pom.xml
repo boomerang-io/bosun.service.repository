@@ -5,7 +5,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.6.6</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>net.boomerangplatform</groupId>
@@ -23,7 +23,7 @@
 		<jacoco.out.path>${project.build.directory}</jacoco.out.path>
 		<sonar.jacoco.reportPaths>${jacoco.out.path}/jacoco.exec</sonar.jacoco.reportPaths>
 		<jacoco.version>0.8.2</jacoco.version>
-		<spring.data>2.6.3</spring.data>
+		<spring.data>2.6.4</spring.data>
 	</properties>
 
 	<dependencies>
