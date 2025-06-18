@@ -27,6 +27,17 @@
 		<jacoco.version>0.8.12</jacoco.version>
 		<spring.data>2.6.3</spring.data>
 	</properties>
+	<dependencyManagement>
+		<dependencies>
+
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-core</artifactId>
+				<version>10.1.41</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
