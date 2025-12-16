@@ -194,6 +194,7 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
     final byte[] plainCredsBytes = plainCreds.getBytes(StandardCharsets.UTF_8);
     final byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
     final String base64Creds = new String(base64CredsBytes, StandardCharsets.UTF_8);
+    LOGGER.debug("Base64: " + base64Creds);
 
     final HttpHeaders headers = new HttpHeaders();
     headers.add("Accept", "application/json");
