@@ -7,7 +7,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import net.boomerangplatform.model.Analysis;
 import net.boomerangplatform.model.CICDSettingsEntity;
 import net.boomerangplatform.model.Config;
@@ -53,8 +57,8 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 
   private static final String COMPONENT = "{component}";
 
-  // private static final Logger LOGGER = LogManager.getLogger();
-  //
+  private static final Logger LOGGER = LogManager.getLogger();
+  
   // private static final String LOG_INFO = "ciComponentName=%s, ciComponentVersionId=%s,
   // ciTeamId=%s";
 
@@ -101,23 +105,33 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 
       final HttpEntity<?> request = new HttpEntity<>(getHeaders());
 
-      final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse =
-          internalRestTemplate.exchange(url, HttpMethod.GET, request,
-              SonarQubeMeasuresReport.class);
-      SonarQubeMeasuresReport sonarQubeMeasuresReport = sonarQubeMeasuresReportResponse.getBody();
-
-      Measures measures = getMeasures(sonarQubeMeasuresReport.getMeasures());
-
-      final ResponseEntity<SonarQubeIssuesReport> sonarQubeReportResponse =
-          internalRestTemplate.exchange(getSonarQubeReportUrl(id, date), HttpMethod.GET, request,
-              SonarQubeIssuesReport.class);
-      SonarQubeIssuesReport sonarQubeIssuesReport = sonarQubeReportResponse.getBody();
-
-      Issues issues =
-          getIssues(sonarQubeIssuesReport.getIssues(), sonarQubeIssuesReport.getComponents());
-
-      sonarQubeReport.setIssues(issues);
-      sonarQubeReport.setMeasures(measures);
+      try {
+	      final ResponseEntity<SonarQubeMeasuresReport> sonarQubeMeasuresReportResponse =
+	          internalRestTemplate.exchange(url, HttpMethod.GET, request,
+	              SonarQubeMeasuresReport.class);
+	      SonarQubeMeasuresReport sonarQubeMeasuresReport = sonarQubeMeasuresReportResponse.getBody();
+	
+	      Measures measures = getMeasures(sonarQubeMeasuresReport.getMeasures());
+	
+	      final ResponseEntity<SonarQubeIssuesReport> sonarQubeReportResponse =
+	          internalRestTemplate.exchange(getSonarQubeReportUrl(id, date), HttpMethod.GET, request,
+	              SonarQubeIssuesReport.class);
+	      
+	      SonarQubeIssuesReport sonarQubeIssuesReport = sonarQubeReportResponse.getBody();
+	
+	      Issues issues =
+	          getIssues(sonarQubeIssuesReport.getIssues(), sonarQubeIssuesReport.getComponents());
+	
+	      sonarQubeReport.setIssues(issues);
+	      sonarQubeReport.setMeasures(measures);
+	      
+	      LOGGER.debug("Sonarqube issues total: " + sonarQubeReport.getIssues().getTotal().toString());
+	      LOGGER.debug("Sonarqube violations total: " + sonarQubeReport.getMeasures().getViolations().toString());
+	      
+      } catch (Exception e) {
+      	LOGGER.error("Error retrieving Sonarqube measures report: " + e.getMessage());
+      	e.printStackTrace();
+      }
     }
     return sonarQubeReport;
   }
@@ -234,18 +248,26 @@ public class SonarQubeRepositoryServiceImpl implements SonarQubeRepositoryServic
 
     String url = sb.toString().replace("{project}", project);
 
-    final ResponseEntity<SonarQubeProjectVersions> sonarQubeProjectVersionsResponse =
-        internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeProjectVersions.class);
-    SonarQubeProjectVersions sonarQubeProjectVersions = sonarQubeProjectVersionsResponse.getBody();
-
-    for (Analysis analysis : sonarQubeProjectVersions.getAnalyses()) {
-      for (Event event : analysis.getEvents()) {
-        if (event.getName().equalsIgnoreCase(version)) {
-          return analysis.getDate();
-        }
-      }
+    try {
+	    final ResponseEntity<SonarQubeProjectVersions> sonarQubeProjectVersionsResponse =
+	        internalRestTemplate.exchange(url, HttpMethod.GET, request, SonarQubeProjectVersions.class);
+	    SonarQubeProjectVersions sonarQubeProjectVersions = sonarQubeProjectVersionsResponse.getBody();
+	
+	    for (Analysis analysis : sonarQubeProjectVersions.getAnalyses()) {
+	      for (Event event : analysis.getEvents()) {
+	        if (event.getName().equalsIgnoreCase(version)) {
+	        	LOGGER.debug("Sonaqube date for version found: " + analysis.getDate().toString());
+	          return analysis.getDate();
+	        }
+	      }
+	    }
+    } catch (Exception e) {
+    	LOGGER.error("Error retrieving Sonarqube date for version: " + e.getMessage());
+    	e.printStackTrace();
     }
 
+    LOGGER.debug("Sonaqube date for version not found");
+    
     return null;
   }
 
