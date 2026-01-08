@@ -33,12 +33,12 @@
 			<dependency>
 				<groupId>org.apache.tomcat.embed</groupId>
 				<artifactId>tomcat-embed-core</artifactId>
-				<version>11.0.11</version>
+				<version>11.0.12</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
-				<version>6.2.8</version>
+				<version>6.2.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.security</groupId>
@@ -49,6 +49,12 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-beans</artifactId>
+				<version>6.2.10</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
 				<version>6.2.10</version>
 			</dependency>
 
@@ -98,7 +104,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>6.2.7</version>
+			<version>6.2.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
