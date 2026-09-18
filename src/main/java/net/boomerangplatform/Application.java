@@ -19,7 +19,6 @@ public class Application {
   @Qualifier("requestFactoryRestTemplate")
   public RestTemplate requestFactoryRestTemplate() {
     final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-    requestFactory.setBufferRequestBody(false);
     return new RestTemplate(requestFactory);
   }
 

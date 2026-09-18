@@ -20,7 +20,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import net.boomerangplatform.model.ArtifactoryFile;
 import net.boomerangplatform.model.ArtifactoryFileListContainer;
 import net.boomerangplatform.model.CICDSettingsEntity;
@@ -122,7 +123,7 @@ public class ArtifactoryRepositoryServiceImpl implements ArtifactoryRepositorySe
       artifactFileContainer = artifactListJsonBytes != null && artifactListJsonBytes.length != 0
           ? new ObjectMapper().readValue(artifactListJsonBytes, ArtifactoryFileListContainer.class)
           : new ArtifactoryFileListContainer();
-    } catch (final IOException e) {
+    } catch (final JacksonException e) {
       LOGGER.error("getArtifactList() - failure to parse Artifactory file list", e);
       return versionArtifacts;
     }
@@ -167,7 +168,7 @@ public class ArtifactoryRepositoryServiceImpl implements ArtifactoryRepositorySe
             new ObjectMapper().readValue(artifactListJsonBytes, ArtifactoryFileListContainer.class);
         versionCreated = artifactFileContainer.getCreated();
       }
-    } catch (RestClientException | IOException e) {
+    } catch (RestClientException | JacksonException e) {
       LOGGER.error(
           "getArtifactVersionCreatedDate() - failure in call to Artifactory for artifact list", e);
       return versionCreated;
