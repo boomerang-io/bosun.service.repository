@@ -12,12 +12,13 @@
 
 	<groupId>net.boomerangplatform</groupId>
 	<artifactId>service-repository</artifactId>
-	<version>1.0.0</version>
+	<version>${version.name}</version>
 	<packaging>jar</packaging>
 	<name>service-repository</name>
 	<description>Service for Template</description>
 
 	<properties>
+		<version.name>1.0.0</version.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
